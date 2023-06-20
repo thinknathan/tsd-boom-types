@@ -200,13 +200,13 @@ interface ColorComp {
 	};
 }
 
-interface DoubleJumpComp {
-	/**
-	 * Performs double jump (the initial jump only happens if player is grounded).
-	 * @param force The upward force to apply
-	 */
-	double_jump(force: number): void;
-}
+// interface DoubleJumpComp {
+// 	/**
+// 	 * Performs double jump (the initial jump only happens if player is grounded).
+// 	 * @param force The upward force to apply
+// 	 */
+// 	double_jump(force: number): void;
+// }
 
 interface FadeInComp {}
 
@@ -314,7 +314,7 @@ type Component =
 	| AreaComp
 	| BodyComp
 	| ColorComp
-	| DoubleJumpComp
+	// | DoubleJumpComp
 	| FadeInComp
 	| Fixed
 	| HealthComp
@@ -378,7 +378,7 @@ declare function color(args: ColorComp | color): ColorComp;
  * @param options Component options
  * @returns The double jump component
  */
-declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
+// declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
 
 /**
  * Fade object in.
