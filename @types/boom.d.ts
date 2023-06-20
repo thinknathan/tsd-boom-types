@@ -25,32 +25,51 @@ interface GameObject {
 	 * @returns The game object
 	 */
 	add(comps: Component[]): GameObject;
+
 	/**
 	 * Destroy this game object
 	 */
 	destroy(): void;
+
 	/**
 	 * Check if there is a certain tag on this game object.
 	 * @param tag The tag to check
 	 * @returns Returns true if the tag exists on the game object
 	 */
 	is(tag: string): boolean;
+
 	/**
 	 * Add a component to this game object.
 	 * @param comp The component to use
 	 */
 	use(comp: object): void;
+
 	/**
 	 * Remove a component from this game object.
 	 * @param tag The component tag to remove
 	 */
 	unuse(tag: string): void;
+
 	/**
 	 * Get state for a specific component on this game object.
 	 * @param tag The component to get state for
 	 * @returns The component state
 	 */
 	c(tag: string): object;
+
+	/**
+	 * Internal fields?
+	 */
+	// pre_update: unknown;
+	// update: unknown;
+	// post_update: unknown;
+	// dirty: boolean;
+	// children: object | LuaTable;
+	// comps: object | LuaTable;
+	// properties: unknown;
+	// id: hash;
+	// ids: object | LuaTable;
+	// tags: object | LuaTable;
 }
 
 /**
@@ -103,9 +122,13 @@ declare function every(tag: string, cb: (object: GameObject) => void): void;
 // Components
 //
 
-interface Anchor {}
+interface Anchor {
+	tag: 'anchor';
+	object: GameObject;
+}
 
 interface AreaComp {
+	tag: 'area';
 	/**
 	 * Get all collisions currently happening for this component.
 	 * @returns List of collisions
@@ -136,17 +159,46 @@ interface AreaComp {
 	 * @returns boolean Will return true if point is within area
 	 */
 	has_point(point: undefined): boolean;
+	/**
+	 * Internal fields?
+	 */
+	// update: unknown
+	// destroy: unknown
+	// init: unknown
+	// pre_update: unknown
 }
 
 interface BodyComp {
+	tag: 'body';
 	/**
 	 * Add upward force
 	 * @param force The upward force to apply
 	 */
 	jump(force: number): void;
+	is_jumping: boolean;
+	is_grounded: boolean;
+	is_falling: boolean;
+	is_static: boolean;
+	jump_force: number;
+	/**
+	 * Internal fields?
+	 */
+	// update: unknown
+	// destroy: unknown
+	// init: unknown
+	// pre_update: unknown
 }
 
-interface ColorComp {}
+interface ColorComp {
+	tag: 'color';
+	// TO-DO: Document these
+	color: {
+		darken: Function;
+		invert: Function;
+		clone: Function;
+		lighten: Function;
+	};
+}
 
 interface DoubleJumpComp {
 	/**
@@ -301,16 +353,16 @@ declare function anchor(
  * @param options Component options (width and height)
  * @returns The area component
  */
-declare function area(options: { width: number; height: number }): AreaComp;
+declare function area(options?: { width?: number; height?: number }): AreaComp;
 
 /**
  * Physical body that responds to gravity. Requires AreaComp and PosComp components on the game object. This also makes the object solid.
  * @param options Component options (jump_force, is_static)
  * @returns The body component
  */
-declare function body(options: {
-	jump_force: number;
-	is_static: boolean;
+declare function body(options?: {
+	jump_force?: number;
+	is_static?: boolean;
 }): BodyComp;
 
 /**
