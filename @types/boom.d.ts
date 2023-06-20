@@ -4,27 +4,104 @@
 
 /** @noSelfInFile */
 
-interface Vec2 {
-	x: number;
-	y: number;
-	z: 0;
+//
+// Start
+//
+
+/**
+ * Start a boom game. Call this from your own game script
+ * @param game Game loop function
+ */
+declare type Boom = (this: void, game: () => void) => void;
+
+//
+// Game Obj
+//
+
+interface GameObject {
 	/**
-	 * Vec2(0, 1)
+	 * Add a game object as a child of this game object.
+	 * @param comps The game object components
+	 * @returns The game object
 	 */
-	UP: Vec2;
+	add(comps: Component[]): GameObject;
 	/**
-	 * Vec2(0, -1)
+	 * Destroy this game object
 	 */
-	DOWN: Vec2;
+	destroy(): void;
 	/**
-	 * Vec2(-1, 0)
+	 * Check if there is a certain tag on this game object.
+	 * @param tag The tag to check
+	 * @returns Returns true if the tag exists on the game object
 	 */
-	LEFT: Vec2;
+	is(tag: string): boolean;
 	/**
-	 * Vec2(1, 0)
+	 * Add a component to this game object.
+	 * @param comp The component to use
 	 */
-	RIGHT: Vec2;
+	use(comp: object): void;
+	/**
+	 * Remove a component from this game object.
+	 * @param tag The component tag to remove
+	 */
+	unuse(tag: string): void;
+	/**
+	 * Get state for a specific component on this game object.
+	 * @param tag The component to get state for
+	 * @returns The component state
+	 */
+	c(tag: string): object;
 }
+
+/**
+ * Add a game object with a set of components.
+ * @param comps The components for the game object
+ * @returns The created game object
+ */
+declare function add(comps: Component[]): GameObject;
+
+/**
+ * Destroy a game object and all of its components.
+ * @param object The object to destroy
+ */
+declare function destroy(object: GameObject): void;
+
+/**
+ * Destroy all objects with a certain tag.
+ * @param tag The tag to destroy or nil to destroy all objects
+ */
+declare function destroy_all(tag: string): void;
+
+/**
+ * Get game object with specific id.
+ * @param id
+ * @returns The object or nil if it doesn't exist
+ */
+declare function object(id: string): GameObject | undefined;
+
+/**
+ * Get all game objects.
+ * @returns All game objects
+ */
+declare function objects(): GameObject[];
+
+/**
+ * Get all game objects with the specified tag.
+ * @param tag The tag to get objects for, nil to get all objects
+ * @returns List of objects
+ */
+declare function get(tag: string | undefined): GameObject[];
+
+/**
+ * Run callback on every object with a certain tag.
+ * @param tag The tag that must exist on the object
+ * @param cb The callback to run
+ */
+declare function every(tag: string, cb: (object: GameObject) => void): void;
+
+//
+// Components
+//
 
 interface Anchor {}
 
@@ -60,8 +137,6 @@ interface AreaComp {
 	 */
 	has_point(point: undefined): boolean;
 }
-
-interface Collision {}
 
 interface BodyComp {
 	/**
@@ -182,57 +257,6 @@ interface Timer {
 
 interface Z {}
 
-interface GameObject {
-	/**
-	 * Add a game object as a child of this game object.
-	 * @param comps The game object components
-	 * @returns The game object
-	 */
-	add(comps: Component[]): GameObject;
-	/**
-	 * Destroy this game object
-	 */
-	destroy(): void;
-	/**
-	 * Check if there is a certain tag on this game object.
-	 * @param tag The tag to check
-	 * @returns Returns true if the tag exists on the game object
-	 */
-	is(tag: string): boolean;
-	/**
-	 * Add a component to this game object.
-	 * @param comp The component to use
-	 */
-	use(comp: object): void;
-	/**
-	 * Remove a component from this game object.
-	 * @param tag The component tag to remove
-	 */
-	unuse(tag: string): void;
-	/**
-	 * Get state for a specific component on this game object.
-	 * @param tag The component to get state for
-	 * @returns The component state
-	 */
-	c(tag: string): object;
-}
-
-interface Tween {
-	/**
-	 * Register an event when finished
-	 * @param fn The function to call when the tween has finished
-	 */
-	on_end(fn: () => void): void;
-	/**
-	 * Finish tween now.
-	 */
-	finish(): void;
-	/**
-	 * Cancel tween.
-	 */
-	cancel(): void;
-}
-
 type Component =
 	| Anchor
 	| AreaComp
@@ -254,14 +278,6 @@ type Component =
 	| Text
 	| Timer
 	| Z;
-
-// Functions
-
-/**
- * Start a boom game. Call this from your own game script
- * @param game Game loop function
- */
-declare function boom(game: () => void): void;
 
 /**
  * Anchor point for render.
@@ -310,7 +326,7 @@ declare function color(args: ColorComp | color): ColorComp;
  * @param options Component options
  * @returns The double jump component
  */
-declare function double_jump(options: { num_jumps?: number }): DoubleJumpComp;
+declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
 
 /**
  * Fade object in.
@@ -337,7 +353,7 @@ declare function health(hp: number): HealthComp;
  * @param time In seconds
  * @param options Fade out duration (default 0 which is no fade out).
  */
-declare function lifespan(time: number, options: { fade?: number }): Lifespan;
+declare function lifespan(time: number, options?: { fade?: number }): Lifespan;
 
 /**
  * Create a move component.
@@ -352,7 +368,7 @@ declare function move(direction: Vec2, speed: number): Move;
  * @param options Destroy when going offscreen
  * @returns The created component
  */
-declare function offscreen(options: {
+declare function offscreen(options?: {
 	distance: number;
 	destroy: boolean;
 }): Offscreen;
@@ -394,7 +410,7 @@ declare function scale(x: number, y: number): Scale;
  */
 declare function sprite(
 	anim: string,
-	options: {
+	options?: {
 		atlas?: any;
 		flip_x?: boolean;
 		flip_y?: boolean;
@@ -417,7 +433,7 @@ declare function stay(): Stay;
  */
 declare function text(
 	text: string,
-	options: {
+	options?: {
 		font?: string;
 		align?: 'left' | 'right' | 'center';
 		width?: number;
@@ -439,6 +455,10 @@ declare function timer(n: number, fn: () => void): Timer;
  */
 declare function z(index: number): Z;
 
+//
+// Events
+//
+
 /**
  * Register an event that runs when two game objects collide.
  * @param tag1 Tag which the first game object must have
@@ -451,6 +471,8 @@ declare function on_collide(
 	tag2: string | undefined,
 	fn: (collision: any, cancel: any) => void
 ): any;
+
+interface Collision {}
 
 /**
  * Set mouse click listener.
@@ -483,19 +505,6 @@ declare function on_key_release(
 ): () => void;
 
 /**
- * Check if a certain key is down.
- * @param key_id The key that must be down, or nil for any key
- * @returns True if down
- */
-declare function is_key_down(key_id: string | undefined): boolean;
-
-/**
- * Get mouse position (screen coordinates).
- * @returns Mouse position
- */
-declare function mouse_pos(): Vec2;
-
-/**
  * Run a function every frame. Register an event that runs every frame, optionally for all game objects with certain tag
  * @param tag Run event for all objects matching tag (optional)
  * @param fn The event function to call. Will receive object and cancel function.
@@ -505,100 +514,10 @@ declare function on_update(
 	fn: (object: any, cancel: (object: any, cancel: any) => void) => void
 ): void;
 
-/**
- * Add a game object with a set of components.
- * @param comps The components for the game object
- * @returns The created game object
- */
-declare function add(comps: Component[]): GameObject;
+//
+// Level
+//
 
-/**
- * Destroy a game object and all of its components.
- * @param object The object to destroy
- */
-declare function destroy(object: GameObject): void;
-/**
- * Destroy all objects with a certain tag.
- * @param tag The tag to destroy or nil to destroy all objects
- */
-declare function destroy_all(tag: string): void;
-/**
- * Get game object with specific id.
- * @param id
- * @returns The object or nil if it doesn't exist
- */
-declare function object(id: string): GameObject | undefined;
-/**
- * Get all game objects.
- * @returns All game objects
- */
-declare function objects(): GameObject[];
-/**
- * Get all game objects with the specified tag.
- * @param tag The tag to get objects for, nil to get all objects
- * @returns List of objects
- */
-declare function get(tag: string | undefined): GameObject[];
-/**
- * Run callback on every object with a certain tag.
- * @param tag The tag that must exist on the object
- * @param cb The callback to run
- */
-declare function every(tag: string, cb: (object: GameObject) => void): void;
-/**
- * Get or set camera position.
- * @param x
- * @param y
- * @returns Camera position
- */
-declare function cam_pos(x?: number | Vec2, y?: number): Vec2;
-/**
- * Get or set camera rotation.
- * @param angle The angle to set or nil to get current rotation
- * @returns The camera rotation in degrees
- */
-declare function cam_rot(angle?: number): number;
-/**
- * Get or set the camera zoom.
- * @param zoom The zoom to set or nil to get the current zoom.
- * @returns The camera zoom
- */
-declare function cam_zoom(zoom?: number): number;
-/**
- * Get gravity
- * @returns The gravity in pixels per seconds
- */
-declare function get_gravity(): number;
-/**
- * Set gravity
- * @param gravity Gravity in pixels per seconds
- */
-declare function set_gravity(gravity: number): void;
-/**
- * Get screen width
- * @returns Width of screen
- */
-declare function width(): number;
-/**
- * Get screen height
- * @returns Height of screen
- */
-declare function height(): number;
-/**
- * Get screen center position
- * @returns Center of screen
- */
-declare function center(): Vec2;
-/**
- * Get the delta time
- * @returns Delta time
- */
-declare function dt(): number;
-/**
- * Get time since start
- * @returns Time since start in seconds
- */
-declare function time(): number;
 /**
  * Construct a level based on symbols.
  * @param map List of strings presenting horizontal rows of tiles
@@ -616,6 +535,11 @@ declare function add_level(
 		};
 	}
 ): GameObject;
+
+//
+// Math
+//
+
 /**
  * Get a random number. If called with no arguments the function returns a number between 0 and 1. If called with a single argument 'a' a number between 0 and 'a' is returned. If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
  * @param a
@@ -649,13 +573,64 @@ declare function tween(
 	set_value: (value: number | Vec2) => void
 ): Tween;
 
+interface Tween {
+	/**
+	 * Register an event when finished
+	 * @param fn The function to call when the tween has finished
+	 */
+	on_end(fn: () => void): void;
+	/**
+	 * Finish tween now.
+	 */
+	finish(): void;
+	/**
+	 * Cancel tween.
+	 */
+	cancel(): void;
+}
+
 /**
  * Create a Vec2
  * @param x Horizontal position
  * @param y Vertical position
  * @returns The created Vec2
  */
-declare function vec2(x: number, y: number): Vec2;
+declare function vec2(x?: number, y?: number): Vec2;
+
+/**
+ * When vec2 is called as an object instead of as a function.
+ */
+declare namespace vec2 {
+	/**
+	 * Vec2(0, 1)
+	 */
+	const UP: Vec2;
+	/**
+	 * Vec2(0, -1)
+	 */
+	const DOWN: Vec2;
+	/**
+	 * Vec2(-1, 0)
+	 */
+	const LEFT: Vec2;
+	/**
+	 * Vec2(1, 0)
+	 */
+	const RIGHT: Vec2;
+}
+
+/**
+ * A 2D vector based on vmath.vec3. Z is always 0.
+ */
+interface Vec2 {
+	x: number;
+	y: number;
+	z: 0;
+}
+
+//
+// Scene
+//
 
 /**
  * Create a scene.
@@ -670,6 +645,10 @@ declare function scene(id: string, fn: (...args: any[]) => void): void;
  * @param args Additional arguments to pass to the scene function
  */
 declare function show(id: string, ...args: any[]): void;
+
+//
+// Timer
+//
 
 /**
  * Run a callback after a certain nummber of seconds.
@@ -686,3 +665,84 @@ declare function wait(seconds: number, cb: () => void): () => any;
  * @returns Call to cancel the timer
  */
 declare function loop(seconds: number, cb: () => void): () => any;
+
+//
+// Info
+//
+
+/**
+ * Check if a certain key is down.
+ * @param key_id The key that must be down, or nil for any key
+ * @returns True if down
+ */
+declare function is_key_down(key_id: string | undefined): boolean;
+
+/**
+ * Get mouse position (screen coordinates).
+ * @returns Mouse position
+ */
+declare function mouse_pos(): Vec2;
+
+/**
+ * Get or set camera position.
+ * @param x
+ * @param y
+ * @returns Camera position
+ */
+declare function cam_pos(x?: number | Vec2, y?: number): Vec2;
+
+/**
+ * Get or set camera rotation.
+ * @param angle The angle to set or nil to get current rotation
+ * @returns The camera rotation in degrees
+ */
+declare function cam_rot(angle?: number): number;
+
+/**
+ * Get or set the camera zoom.
+ * @param zoom The zoom to set or nil to get the current zoom.
+ * @returns The camera zoom
+ */
+declare function cam_zoom(zoom?: number): number;
+
+/**
+ * Get gravity
+ * @returns The gravity in pixels per seconds
+ */
+declare function get_gravity(): number;
+
+/**
+ * Set gravity
+ * @param gravity Gravity in pixels per seconds
+ */
+declare function set_gravity(gravity: number): void;
+
+/**
+ * Get screen width
+ * @returns Width of screen
+ */
+declare function width(): number;
+
+/**
+ * Get screen height
+ * @returns Height of screen
+ */
+declare function height(): number;
+
+/**
+ * Get screen center position
+ * @returns Center of screen
+ */
+declare function center(): Vec2;
+
+/**
+ * Get the delta time
+ * @returns Delta time
+ */
+declare function dt(): number;
+
+/**
+ * Get time since start
+ * @returns Time since start in seconds
+ */
+declare function time(): number;
