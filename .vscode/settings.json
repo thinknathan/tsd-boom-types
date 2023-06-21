@@ -1,0 +1,10 @@
+{
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.formatOnPaste": true,
+	"editor.tabSize": 2,
+	"editor.detectIndentation": false,
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
+}

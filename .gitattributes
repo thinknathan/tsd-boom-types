@@ -1,0 +1,11 @@
+# TypeScript
+*.d.ts linguist-language=TypeScript
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Exclude files from archive
+.gitattributes export-ignore
+.prettierignore export-ignore
+.prettierrc.json export-ignore
+.vscode export-ignore
