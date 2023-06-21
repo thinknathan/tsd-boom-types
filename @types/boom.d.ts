@@ -1,4 +1,3 @@
-/// <library version="1.0.1" src="https://github.com/britzl/boom/archive/refs/tags/1.0.0.zip" />
 /// <reference types="@typescript-to-lua/language-extensions" />
 /// <reference types="@ts-defold/types" />
 
@@ -12,7 +11,7 @@
  * Start a boom game. Call this from your own game script
  * @param game Game loop function
  */
-declare type Boom = (this: void, game: () => void) => void;
+declare type Boom = (game: () => void) => void;
 
 //
 // Game Obj
@@ -24,7 +23,7 @@ interface GameObject {
 	 * @param comps The game object components
 	 * @returns The game object
 	 */
-	add(comps: Component[]): GameObject;
+	add(comps: Component[] | LuaSet<Component>): GameObject;
 
 	/**
 	 * Destroy this game object
@@ -57,19 +56,16 @@ interface GameObject {
 	 */
 	c(tag: string): object;
 
-	/**
-	 * Internal fields?
-	 */
+	dirty: boolean;
+	children: object | LuaTable;
+	comps: object | LuaTable;
+	properties: object | LuaTable;
+	id: hash;
+	ids: object | LuaTable;
+	tags: object | LuaTable;
 	// pre_update: unknown;
 	// update: unknown;
 	// post_update: unknown;
-	// dirty: boolean;
-	// children: object | LuaTable;
-	// comps: object | LuaTable;
-	// properties: unknown;
-	// id: hash;
-	// ids: object | LuaTable;
-	// tags: object | LuaTable;
 }
 
 /**
@@ -77,7 +73,7 @@ interface GameObject {
  * @param comps The components for the game object
  * @returns The created game object
  */
-declare function add(comps: Component[]): GameObject;
+declare function add(comps: Component[] | LuaSet<Component>): GameObject;
 
 /**
  * Destroy a game object and all of its components.
@@ -87,14 +83,14 @@ declare function destroy(object: GameObject): void;
 
 /**
  * Destroy all objects with a certain tag.
- * @param tag The tag to destroy or nil to destroy all objects
+ * @param tag The tag to destroy or undefined to destroy all objects
  */
-declare function destroy_all(tag: string): void;
+declare function destroy_all(tag?: string): void;
 
 /**
  * Get game object with specific id.
  * @param id
- * @returns The object or nil if it doesn't exist
+ * @returns The object or undefined if it doesn't exist
  */
 declare function object(id: string): GameObject | undefined;
 
@@ -102,14 +98,14 @@ declare function object(id: string): GameObject | undefined;
  * Get all game objects.
  * @returns All game objects
  */
-declare function objects(): GameObject[];
+declare function objects(): GameObject[] | LuaSet<GameObject>;
 
 /**
  * Get all game objects with the specified tag.
- * @param tag The tag to get objects for, nil to get all objects
+ * @param tag The tag to get objects for, undefined to get all objects
  * @returns List of objects
  */
-declare function get(tag: string | undefined): GameObject[];
+declare function get(tag?: string): GameObject[] | LuaSet<GameObject>;
 
 /**
  * Run callback on every object with a certain tag.
@@ -124,7 +120,6 @@ declare function every(tag: string, cb: (object: GameObject) => void): void;
 
 interface Anchor {
 	tag: 'anchor';
-	object: GameObject;
 }
 
 interface AreaComp {
@@ -133,7 +128,7 @@ interface AreaComp {
 	 * Get all collisions currently happening for this component.
 	 * @returns List of collisions
 	 */
-	get_collisions(): Collision[];
+	get_collisions(): Collision[] | LuaSet<Collision>;
 	/**
 	 * Check collision between this component and another object.
 	 * @param other_object The game object to check collisions with.
@@ -144,7 +139,7 @@ interface AreaComp {
 	): LuaMultiReturn<[boolean, Collision]>;
 	/**
 	 * Register event listener when this component is colliding.
-	 * @param tag Optional tag which colliding object must have, nil for all collisions
+	 * @param tag Optional tag which colliding object must have, undefined for all collisions
 	 * @param cb Function to call when collision is detected
 	 */
 	on_collide(tag: string | undefined, cb: () => void): void;
@@ -159,13 +154,11 @@ interface AreaComp {
 	 * @returns boolean Will return true if point is within area
 	 */
 	has_point(point: undefined): boolean;
-	/**
-	 * Internal fields?
-	 */
-	// update: unknown
-	// destroy: unknown
-	// init: unknown
-	// pre_update: unknown
+
+	// update: Function;
+	// destroy: Function;
+	// init: Function;
+	// pre_update: Function;
 }
 
 interface BodyComp {
@@ -180,39 +173,64 @@ interface BodyComp {
 	is_falling: boolean;
 	is_static: boolean;
 	jump_force: number;
-	/**
-	 * Internal fields?
-	 */
-	// update: unknown
-	// destroy: unknown
-	// init: unknown
-	// pre_update: unknown
+
+	// update: Function;
+	// destroy: Function;
+	// init: Function;
+	// pre_update: Function;
 }
 
 interface ColorComp {
 	tag: 'color';
-	// TO-DO: Document these
+	/**
+	 * Functions for modifying color.
+	 */
 	color: {
-		darken: Function;
-		invert: Function;
-		clone: Function;
-		lighten: Function;
+		/**
+		 * Darkens the Color.
+		 * @param n Amount to darken color by
+		 */
+		darken: (n: number) => ColorComp;
+		/**
+		 * Invert the Color.
+		 */
+		invert: () => ColorComp;
+		/**
+		 * Clone the Color.
+		 */
+		clone: () => ColorComp;
+		/**
+		 * Lighten the Color.
+		 * @param n Amount to lighten color by
+		 */
+		lighten: (n: number) => ColorComp;
 	};
 }
 
-// interface DoubleJumpComp {
-// 	/**
-// 	 * Performs double jump (the initial jump only happens if player is grounded).
-// 	 * @param force The upward force to apply
-// 	 */
-// 	double_jump(force: number): void;
-// }
+interface DoubleJumpComp {
+	tag: 'double_jump';
+	/**
+	 * Performs double jump (the initial jump only happens if player is grounded).
+	 * @param force The upward force to apply
+	 */
+	double_jump(force: number): void;
+	num_jumps: number;
 
-interface FadeInComp {}
+	// init: Function;
+}
 
-interface Fixed {}
+interface FadeInComp {
+	tag: 'fadein';
+
+	// init: Function;
+}
+
+interface Fixed {
+	tag: 'fixed';
+}
 
 interface HealthComp {
+	tag: 'health';
 	/**
 	 * Register an event that runs when heal() is called.
 	 * @param cb Function to call
@@ -238,13 +256,25 @@ interface HealthComp {
 	 * @param n Amount to decrease
 	 */
 	hurt(n: number): void;
+
+	// destroy: Function;
 }
 
-interface Lifespan {}
+interface Lifespan {
+	tag: 'lifespan';
 
-interface Move {}
+	// init: Function;
+}
+
+interface Move {
+	tag: 'move';
+
+	// update: Function;
+	// init: Function;
+}
 
 interface Offscreen {
+	tag: 'offscreen';
 	/**
 	 * Register a callback that runs when the object goes out of view
 	 * @param cb Function to call when the object goes out of view
@@ -255,24 +285,51 @@ interface Offscreen {
 	 * @param cb Function to call when the object enters view
 	 */
 	on_enter_screen(cb: () => void): void;
+	is_offscreen: boolean;
+
+	// update: Function;
+	// init: Function;
+	// destroy: Function;
 }
 
-interface Opacity {}
+interface Opacity {
+	tag: 'opacity';
+}
 
 interface Pos {
+	tag: 'pos';
 	/**
 	 * Move a number of pixels per second.
 	 * @param x
 	 * @param y
 	 */
 	move(x: number, y: number): void;
+	// TO-DO: document function
+	vel: { dist: Function };
+	// TO-DO: document function
+	pos: { dist: Function };
+
+	// update: Function;
+	// init: Function;
 }
 
-interface Rotate {}
+interface Rotate {
+	tag: 'rotate';
+	// TO-DO: document function
+	rotate: Function;
 
-interface Scale {}
+	// init: Function;
+}
+
+interface Scale {
+	tag: 'scale';
+	// TO-DO: document function
+	scale_to: Function;
+	scale: vmath.vector3;
+}
 
 interface Sprite {
+	tag: 'sprite';
 	/**
 	 * Play an animation
 	 * @param anim The animation to play
@@ -282,13 +339,29 @@ interface Sprite {
 	 * Stop the current animation
 	 */
 	stop(): void;
+	height: number;
+	width: number;
+
+	// init: Function;
+	// pre_update: Function;
+	// destroy: Function;
+	// update: Function;
 }
 
-interface Stay {}
+interface Stay {
+	tag: 'stay';
+}
 
-interface Text {}
+interface Text {
+	tag: 'text';
+
+	// init: Function;
+	// destroy: Function;
+	// update: Function;
+}
 
 interface Timer {
+	tag: 'timer';
 	/**
 	 * Run a callback function after n seconds
 	 * @param n Seconds
@@ -305,16 +378,21 @@ interface Timer {
 	 * Cancel the timer
 	 */
 	cancel(): void;
+
+	// destroy: Function;
+	// init: Function;
 }
 
-interface Z {}
+interface Z {
+	tag: 'z';
+}
 
 type Component =
 	| Anchor
 	| AreaComp
 	| BodyComp
 	| ColorComp
-	// | DoubleJumpComp
+	| DoubleJumpComp
 	| FadeInComp
 	| Fixed
 	| HealthComp
@@ -367,25 +445,32 @@ declare function body(options?: {
 
 /**
  * Create a color component
- * @param
+ * @param r Red
+ * @param g Green
+ * @param b Blue
+ * @param a Optional alpha
  * @returns The color component
  */
-declare type color = [r: number, g: number, b: number, a: number | undefined];
-declare function color(args: ColorComp | color): ColorComp;
+declare function color(
+	r?: number,
+	g?: number,
+	b?: number,
+	a?: number
+): ColorComp;
 
 /**
  * Enables double jump. Requires body component
  * @param options Component options
  * @returns The double jump component
  */
-// declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
+declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
 
 /**
  * Fade object in.
  * @param time In seconds
  * @returns The fade in component.
  */
-declare function fadein(time: number): FadeInComp;
+declare function fadein(time?: number): FadeInComp;
 
 /**
  * Create a fixed component
@@ -398,7 +483,7 @@ declare function fixed(): Fixed;
  * @param hp Initial health
  * @returns The health component
  */
-declare function health(hp: number): HealthComp;
+declare function health(hp?: number): HealthComp;
 
 /**
  * Create a Lifespan component.
@@ -413,7 +498,7 @@ declare function lifespan(time: number, options?: { fade?: number }): Lifespan;
  * @param speed Speed of movement in pixels per second.
  * @returns The created component.
  */
-declare function move(direction: Vec2, speed: number): Move;
+declare function move(direction?: Vec2, speed?: number): Move;
 
 /**
  * Create an offscreen component.
@@ -421,8 +506,8 @@ declare function move(direction: Vec2, speed: number): Move;
  * @returns The created component
  */
 declare function offscreen(options?: {
-	distance: number;
-	destroy: boolean;
+	distance?: number;
+	destroy?: boolean;
 }): Offscreen;
 
 /**
@@ -430,7 +515,10 @@ declare function offscreen(options?: {
  * @param value The opacity from 0.0 to 1.0
  * @returns The created component
  */
-declare function opacity(value: number): Opacity;
+declare function opacity(value?: NumberBetweenZeroAndOne): Opacity;
+type NumberBetweenZeroAndOne = number & {
+	readonly __numberBetweenZeroAndOne: unique symbol;
+};
 
 /**
  * Create a position component.
@@ -445,7 +533,7 @@ declare function pos(x: number, y: number): Pos;
  * @param angle
  * @returns The component
  */
-declare function rotate(angle: number): Rotate;
+declare function rotate(angle?: number): Rotate;
 
 /**
  * Apply a scale to the object
@@ -453,7 +541,7 @@ declare function rotate(angle: number): Rotate;
  * @param y
  * @returns The component
  */
-declare function scale(x: number, y: number): Scale;
+declare function scale(x?: number, y?: number): Scale;
 
 /**
  * Render a sprite.
@@ -461,9 +549,9 @@ declare function scale(x: number, y: number): Scale;
  * @param animations
  */
 declare function sprite(
-	anim: string,
+	anim?: string,
 	options?: {
-		atlas?: any;
+		atlas?: string | hash;
 		flip_x?: boolean;
 		flip_y?: boolean;
 		width?: number;
@@ -484,7 +572,7 @@ declare function stay(): Stay;
  * @returns The created component
  */
 declare function text(
-	text: string,
+	text?: string,
 	options?: {
 		font?: string;
 		align?: 'left' | 'right' | 'center';
@@ -498,18 +586,21 @@ declare function text(
  * @param fn The function to call
  * @returns The created component
  */
-declare function timer(n: number, fn: () => void): Timer;
+declare function timer(n?: number, fn?: () => void): Timer;
 
 /**
  * Determines the draw order for objects. Object will be drawn on top if z value is bigger.
  * @param index Z-value of the object.
  * @returns The created component
  */
-declare function z(index: number): Z;
+declare function z(index?: number): Z;
 
 //
 // Events
 //
+
+declare type EventCancel = () => void;
+declare type EventCallback = () => void;
 
 /**
  * Register an event that runs when two game objects collide.
@@ -519,11 +610,12 @@ declare function z(index: number): Z;
  * @returns Cancel event function
  */
 declare function on_collide(
-	tag1: string | undefined,
+	tag1: string,
 	tag2: string | undefined,
-	fn: (collision: any, cancel: any) => void
-): any;
+	fn: (collision: Collision, cancel: EventCancel) => void
+): EventCancel;
 
+// TO-DO: Document collision
 interface Collision {}
 
 /**
@@ -532,29 +624,53 @@ interface Collision {}
  * @param cb Callback when mouse button is clicked
  * @returns Cancel listener function
  */
-declare function on_click(tag: string | undefined, cb: () => void): any;
+declare function on_click(
+	tag: string | undefined,
+	cb: EventCallback
+): EventCancel;
+
+/**
+ * Register callback that runs when left mouse button is pressed.
+ * @param cb
+ * @returns Cancel callback
+ */
+declare function on_mouse_press(cb: EventCallback): EventCancel;
+
+/**
+ * Register callback that runs when left mouse button is released.
+ * @param cb
+ * @returns Cancel callback
+ */
+declare function on_mouse_release(cb: EventCallback): EventCancel;
+
+/**
+ * Register callback that runs when the mouse is moved.
+ * @param cb
+ * @returns Cancel callback
+ */
+declare function on_mouse_move(cb: EventCallback): EventCancel;
 
 /**
  * Register callback that runs when a certain key is pressed.
- * @param key_id The key that must be pressed or nil for any key
+ * @param key_id The key that must be pressed or undefined for any key
  * @param cb The callback
  * @returns Cancel callback
  */
 declare function on_key_press(
 	key_id: string | undefined,
-	cb: () => void
-): () => any;
+	cb: EventCallback
+): EventCancel;
 
 /**
  * Register callback that runs when a certain key is released.
- * @param key_id The key that must be released or nil for any key
+ * @param key_id The key that must be released or undefined for any key
  * @param cb The callback
  * @returns Cancel callback
  */
 declare function on_key_release(
 	key_id: string | undefined,
-	cb: () => void
-): () => void;
+	cb: EventCallback
+): EventCancel;
 
 /**
  * Run a function every frame. Register an event that runs every frame, optionally for all game objects with certain tag
@@ -563,7 +679,10 @@ declare function on_key_release(
  */
 declare function on_update(
 	tag: string | undefined,
-	fn: (object: any, cancel: (object: any, cancel: any) => void) => void
+	fn: (
+		object: GameObject,
+		cancel: (object: GameObject, cancel: EventCancel) => void
+	) => void
 ): void;
 
 //
@@ -577,13 +696,13 @@ declare function on_update(
  * @returns Game object with tiles as children
  */
 declare function add_level(
-	map: string[] | LuaTable<string>,
+	map: string[] | LuaSet<string>,
 	options: {
 		tile_width?: number;
 		tile_height?: number;
 		pos?: Vec2;
 		tiles?: {
-			[key: string]: () => Component[];
+			[key: string]: () => Component[] | LuaSet<Component>;
 		};
 	}
 ): GameObject;
@@ -613,7 +732,7 @@ declare function randi(a?: number, b?: number): number;
  * @param from Start value
  * @param to End value
  * @param duration Time in seconds to go from start to end value
- * @param easing Which easing algorithm to use
+ * @param easing Which easing algorithm to use (default EASING_LINEAR)
  * @param set_value Function to call when the value has changed
  * @returns A tween object.
  */
@@ -621,8 +740,8 @@ declare function tween(
 	from: number | Vec2,
 	to: number | Vec2,
 	duration: number,
-	easing: string,
-	set_value: (value: number | Vec2) => void
+	easing: string | undefined,
+	set_value: (endValue: number | Vec2) => void
 ): Tween;
 
 interface Tween {
@@ -669,6 +788,10 @@ declare namespace vec2 {
 	 * Vec2(1, 0)
 	 */
 	const RIGHT: Vec2;
+	/**
+	 * Get distance between another vector.
+	 */
+	function dist(compare: Vec2): number;
 }
 
 /**
@@ -677,7 +800,7 @@ declare namespace vec2 {
 interface Vec2 {
 	x: number;
 	y: number;
-	z: 0;
+	readonly z: 0;
 }
 
 //
@@ -689,14 +812,14 @@ interface Vec2 {
  * @param id Unique id of the scene
  * @param fn The scene code
  */
-declare function scene(id: string, fn: (...args: any[]) => void): void;
+declare function scene(id: string, fn: (...args: unknown[]) => void): void;
 
 /**
  * Show a scene.
  * @param id Id of the scene to show
  * @param args Additional arguments to pass to the scene function
  */
-declare function show(id: string, ...args: any[]): void;
+declare function show(id: string, ...args: unknown[]): void;
 
 //
 // Timer
@@ -724,10 +847,10 @@ declare function loop(seconds: number, cb: () => void): () => any;
 
 /**
  * Check if a certain key is down.
- * @param key_id The key that must be down, or nil for any key
+ * @param key_id The key that must be down, or undefined for any key
  * @returns True if down
  */
-declare function is_key_down(key_id: string | undefined): boolean;
+declare function is_key_down(key_id?: string): boolean;
 
 /**
  * Get mouse position (screen coordinates).
@@ -745,14 +868,14 @@ declare function cam_pos(x?: number | Vec2, y?: number): Vec2;
 
 /**
  * Get or set camera rotation.
- * @param angle The angle to set or nil to get current rotation
+ * @param angle The angle to set or undefined to get current rotation
  * @returns The camera rotation in degrees
  */
 declare function cam_rot(angle?: number): number;
 
 /**
  * Get or set the camera zoom.
- * @param zoom The zoom to set or nil to get the current zoom.
+ * @param zoom The zoom to set or undefined to get the current zoom.
  * @returns The camera zoom
  */
 declare function cam_zoom(zoom?: number): number;
