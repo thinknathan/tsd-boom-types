@@ -7,11 +7,14 @@
 // Start
 //
 
-/**
- * Start a boom game. Call this from your own game script
- * @param game Game loop function
- */
-declare type Boom = (game: () => void) => void;
+/** @noResolution */
+declare module 'boom' {
+	/**
+	 * Start a boom game. Call this from your own game script
+	 * @param game Game loop function
+	 */
+	export function boom(game: () => void): void;
+}
 
 //
 // Game Obj
