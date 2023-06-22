@@ -745,6 +745,10 @@ declare type Vec2 = {
 	y: number;
 	readonly z: 0;
 	readonly __type: vmath.vector3;
+	/**
+	 * Get distance between another vector.
+	 */
+	dist: (compare: Vec2) => number;
 };
 
 /**
@@ -774,15 +778,25 @@ declare function randi(a?: number, b?: number): number;
 declare function rgb(r?: number, g?: number, b?: number, a?: number): ColorComp;
 
 declare namespace rgb {
-	// (1, 0, 0, 1)
+	/**
+	 * Red color. (1, 0, 0, 1)
+	 */
 	export const RED: ColorComp;
-	// (0, 1, 0, 1)
+	/**
+	 * Green color. (0, 1, 0, 1)
+	 */
 	export const GREEN: ColorComp;
-	// (0, 0, 1, 1)
+	/**
+	 * Blue color. (0, 0, 1, 1)
+	 */
 	export const BLUE: ColorComp;
-	// (0, 0, 0, 1)
+	/**
+	 * Black color. (0, 0, 0, 1)
+	 */
 	export const BLACK: ColorComp;
-	// (1, 1, 1, 1)
+	/**
+	 * White color. (1, 1, 1, 1)
+	 */
 	export const WHITE: ColorComp;
 	/**
 	 * Create Color from a hex string.
@@ -838,25 +852,21 @@ declare function vec2(x?: number, y?: number): Vec2;
  */
 declare namespace vec2 {
 	/**
-	 * Vec2(0, 1)
+	 * UP vector (0, 1)
 	 */
 	const UP: Vec2;
 	/**
-	 * Vec2(0, -1)
-	 */
-	const DOWN: Vec2;
-	/**
-	 * Vec2(-1, 0)
-	 */
-	const LEFT: Vec2;
-	/**
-	 * Vec2(1, 0)
+	 * RIGHT vector (1, 0)
 	 */
 	const RIGHT: Vec2;
 	/**
-	 * Get distance between another vector.
+	 * DOWN vector (0, -1)
 	 */
-	function dist(compare: Vec2): number;
+	const DOWN: Vec2;
+	/**
+	 * DOWN vector (-1, 0)
+	 */
+	const LEFT: Vec2;
 }
 
 //
@@ -882,7 +892,7 @@ declare function show(id: string, ...args: unknown[]): void;
 //
 
 /**
- * Run a callback after a certain nummber of seconds.
+ * Run a callback after a certain number of seconds.
  * @param seconds Number of seconds to wait
  * @param cb Function to call
  * @returns Call to cancel the timer
