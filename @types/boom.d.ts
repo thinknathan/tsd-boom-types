@@ -644,6 +644,28 @@ declare function on_collide(
 interface Collision {}
 
 /**
+ * Register callback that runs when a certain key is pressed.
+ * @param key_id The key that must be pressed or undefined for any key
+ * @param cb The callback
+ * @returns Cancel callback
+ */
+declare function on_key_press(
+	key_id: string | undefined,
+	cb: BoomCallback
+): BoomCancelEvent;
+
+/**
+ * Register callback that runs when a certain key is released.
+ * @param key_id The key that must be released or undefined for any key
+ * @param cb The callback
+ * @returns Cancel callback
+ */
+declare function on_key_release(
+	key_id: string | undefined,
+	cb: BoomCallback
+): BoomCancelEvent;
+
+/**
  * Set mouse click listener.
  * @param tag Optional click on object with tag filter
  * @param cb Callback when mouse button is clicked
@@ -674,28 +696,6 @@ declare function on_mouse_release(cb: BoomCallback): BoomCancelEvent;
  * @returns Cancel callback
  */
 declare function on_mouse_move(cb: BoomCallback): BoomCancelEvent;
-
-/**
- * Register callback that runs when a certain key is pressed.
- * @param key_id The key that must be pressed or undefined for any key
- * @param cb The callback
- * @returns Cancel callback
- */
-declare function on_key_press(
-	key_id: string | undefined,
-	cb: BoomCallback
-): BoomCancelEvent;
-
-/**
- * Register callback that runs when a certain key is released.
- * @param key_id The key that must be released or undefined for any key
- * @param cb The callback
- * @returns Cancel callback
- */
-declare function on_key_release(
-	key_id: string | undefined,
-	cb: BoomCallback
-): BoomCancelEvent;
 
 /**
  * Run a function every frame. Register an event that runs every frame, optionally for all game objects with certain tag
@@ -756,12 +756,41 @@ declare type Vec2 = {
 declare function rand(a?: number, b?: number): number;
 
 /**
- * Same as rand() but floored.
+ * Same as rand() but floored. If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
  * @param a
  * @param b
  * @returns Integer number
  */
 declare function randi(a?: number, b?: number): number;
+
+/**
+ * Create a Color.
+ * @param r Red component (0.0 to 1.0)
+ * @param g Green component (0.0 to 1.0)
+ * @param b Blue component (0.0 to 1.0)
+ * @param a Alpha component (0.0 to 1.0)
+ * @returns The created color.
+ */
+declare function rgb(r?: number, g?: number, b?: number, a?: number): ColorComp;
+
+declare namespace rgb {
+	// (1, 0, 0, 1)
+	export const RED: ColorComp;
+	// (0, 1, 0, 1)
+	export const GREEN: ColorComp;
+	// (0, 0, 1, 1)
+	export const BLUE: ColorComp;
+	// (0, 0, 0, 1)
+	export const BLACK: ColorComp;
+	// (1, 1, 1, 1)
+	export const WHITE: ColorComp;
+	/**
+	 * Create Color from a hex string.
+	 * @param hex Hex string in RGB, RGBA, RRGGBB or RRGGBBAA format (with optional initial #).
+	 * @returns The created color.
+	 */
+	export function from_hex(hex: string): ColorComp;
+}
 
 /**
  * Tween a value from one to another. The transition will happen over a certain duration using a specific easing function.
