@@ -1,9 +1,10 @@
 {
 	"name": "@types/tsd-boom",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "Types for britzl's boom, a game framework built on top of Defold",
 	"license": "MIT",
 	"scripts": {
+		"check": "tsc --noEmit",
 		"prettier": "prettier ./** --write"
 	},
 	"types": "./@types/boom.d.ts",
