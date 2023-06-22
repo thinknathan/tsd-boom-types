@@ -159,10 +159,19 @@ declare type BoomComponent =
 	| Timer
 	| Z;
 
+/**
+ * Anchor component. Use this component to offset any rendered component
+ * such as a SpriteComp from the center of the game object.
+ */
 interface Anchor {
 	readonly tag: 'anchor';
 }
 
+/**
+ * Area component. Use this component to define a collider area and bounds for a game object.
+ * The area can be either a rectangle or a circle. The size can either be set manually or
+ * based on the size of a renderable component, such as a sprite.
+ */
 interface AreaComp {
 	readonly tag: 'area';
 	/**
@@ -202,6 +211,11 @@ interface AreaComp {
 	// pre_update: Function;
 }
 
+/**
+ * Physical body that responds to gravity.
+ * Requires AreaComp and PosComp components on the game object.
+ * This also makes the object solid.
+ */
 interface BodyComp {
 	readonly tag: 'body';
 	/**
@@ -221,6 +235,9 @@ interface BodyComp {
 	// pre_update: Function;
 }
 
+/**
+ * Component to control the color of the game object.
+ */
 interface ColorComp {
 	readonly tag: 'color';
 	/**
@@ -248,6 +265,9 @@ interface ColorComp {
 	};
 }
 
+/**
+ * Enables double jump. Requires "body" component.
+ */
 interface DoubleJumpComp {
 	readonly tag: 'double_jump';
 	/**
@@ -260,16 +280,25 @@ interface DoubleJumpComp {
 	// init: Function;
 }
 
+/**
+ * Fade in game object visual components such as sprites.
+ */
 interface FadeInComp {
 	readonly tag: 'fadein';
 
 	// init: Function;
 }
 
+/**
+ * Make object unaffected by camera.
+ */
 interface Fixed {
 	readonly tag: 'fixed';
 }
 
+/**
+ * Handles health related logic.
+ */
 interface HealthComp {
 	readonly tag: 'health';
 	/**
@@ -301,12 +330,19 @@ interface HealthComp {
 	// destroy: Function;
 }
 
+/**
+ * Destroy the game object after certain amount of time.
+ * Use this component when you need a game object to be destroyed after a period of time.
+ */
 interface Lifespan {
 	readonly tag: 'lifespan';
 
 	// init: Function;
 }
 
+/**
+ * Component to move a game object in a direction of travel and at a specific speed.
+ */
 interface Move {
 	readonly tag: 'move';
 
@@ -314,6 +350,9 @@ interface Move {
 	// init: Function;
 }
 
+/**
+ * Control the behavior of a game object when it goes out of view.
+ */
 interface Offscreen {
 	readonly tag: 'offscreen';
 	/**
@@ -333,10 +372,16 @@ interface Offscreen {
 	// destroy: Function;
 }
 
+/**
+ * Component to control the opacity of a game object.
+ */
 interface Opacity {
 	readonly tag: 'opacity';
 }
 
+/**
+ * Position of a game object.
+ */
 interface Pos {
 	readonly tag: 'pos';
 	/**
@@ -352,6 +397,9 @@ interface Pos {
 	// init: Function;
 }
 
+/**
+ * Apply rotation to object.
+ */
 interface Rotate {
 	readonly tag: 'rotate';
 
@@ -364,6 +412,9 @@ interface Rotate {
 	// init: Function;
 }
 
+/**
+ * Apply a scale to the object.
+ */
 interface Scale {
 	readonly tag: 'scale';
 
@@ -376,6 +427,9 @@ interface Scale {
 	readonly scale: vmath.vector3;
 }
 
+/**
+ * Render a sprite.
+ */
 interface Sprite {
 	readonly tag: 'sprite';
 	/**
@@ -396,10 +450,16 @@ interface Sprite {
 	// update: Function;
 }
 
+/**
+ * Do not get destroyed on scene switch.
+ */
 interface Stay {
 	readonly tag: 'stay';
 }
 
+/**
+ * Render text.
+ */
 interface Text {
 	readonly tag: 'text';
 
@@ -408,6 +468,9 @@ interface Text {
 	// update: Function;
 }
 
+/**
+ * Run an action once or repeatedly at a set interval.
+ */
 interface Timer {
 	readonly tag: 'timer';
 	/**
@@ -431,6 +494,10 @@ interface Timer {
 	// init: Function;
 }
 
+/**
+ * Determines the draw order for objects.
+ * Object will be drawn on top if z value is bigger.
+ */
 interface Z {
 	readonly tag: 'z';
 }
@@ -453,7 +520,9 @@ declare function anchor(
 ): Anchor;
 
 /**
- * Create a collider area and enable collision detection. This will create an area component which is used to describe an area which can collide with other area components.
+ * Create a collider area and enable collision detection.
+ * This will create an area component which is used to describe an area
+ * which can collide with other area components.
  * @param options Component options (shape, width, height, radius)
  * @returns The area component
  */
@@ -465,7 +534,8 @@ declare function area(options?: {
 }): AreaComp;
 
 /**
- * Physical body that responds to gravity. Requires AreaComp and PosComp components on the game object. This also makes the object solid.
+ * Physical body that responds to gravity. Requires AreaComp
+ * and PosComp components on the game object. This also makes the object solid.
  * @param options Component options (jump_force, is_static)
  * @returns The body component
  */
@@ -617,7 +687,8 @@ declare function text(
 declare function timer(n?: number, fn?: BoomCallback): Timer;
 
 /**
- * Determines the draw order for objects. Object will be drawn on top if z value is bigger.
+ * Determines the draw order for objects.
+ * Object will be drawn on top if z value is bigger.
  * @param index Z-value of the object.
  * @returns The created component
  */
@@ -698,7 +769,8 @@ declare function on_mouse_release(cb: BoomCallback): BoomCancelEvent;
 declare function on_mouse_move(cb: BoomCallback): BoomCancelEvent;
 
 /**
- * Run a function every frame. Register an event that runs every frame, optionally for all game objects with certain tag
+ * Run a function every frame. Register an event that runs every frame,
+ * optionally for all game objects with certain tag.
  * @param tag Run event for all objects matching tag (optional)
  * @param fn The event function to call. Will receive object and cancel function.
  */
@@ -752,7 +824,9 @@ declare type Vec2 = {
 };
 
 /**
- * Get a random number. If called with no arguments the function returns a number between 0 and 1. If called with a single argument 'a' a number between 0 and 'a' is returned. If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
+ * Get a random number. If called with no arguments the function returns a number between 0 and 1.
+ * If called with a single argument 'a' a number between 0 and 'a' is returned.
+ * If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
  * @param a
  * @param b
  * @returns Float number
@@ -760,7 +834,8 @@ declare type Vec2 = {
 declare function rand(a?: number, b?: number): number;
 
 /**
- * Same as rand() but floored. If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
+ * Same as rand() but floored.
+ * If called with two arguments 'a' and 'b' a number between 'a' and 'b' is returned.
  * @param a
  * @param b
  * @returns Integer number
@@ -807,7 +882,8 @@ declare namespace rgb {
 }
 
 /**
- * Tween a value from one to another. The transition will happen over a certain duration using a specific easing function.
+ * Tween a value from one to another.
+ * The transition will happen over a certain duration using a specific easing function.
  * @param from Start value
  * @param to End value
  * @param duration Time in seconds to go from start to end value
