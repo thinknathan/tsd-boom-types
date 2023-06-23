@@ -1007,8 +1007,8 @@ declare function on_update(
 
 /**
  * Map that describes functionality of tiles.
- * Keys are `strings` that match tiles.
- * Values are `functions` that return sets of `Components`.
+ * Keys are `string`s that match tiles.
+ * Values are `function`s that return sets of components.
  */
 declare type BoomTiles =
 	| {
@@ -1036,6 +1036,9 @@ declare function add_level(
 // Math
 //
 
+/**
+ * 2D vector.
+ */
 declare type Vec2 = {
 	x: number;
 	y: number;
@@ -1068,12 +1071,12 @@ declare function rand(a?: number, b?: number): number;
 declare function randi(a?: number, b?: number): number;
 
 /**
- * Create a Color.
+ * Create a color.
  * @param r Red component (0.0 to 1.0)
  * @param g Green component (0.0 to 1.0)
  * @param b Blue component (0.0 to 1.0)
  * @param a Alpha component (0.0 to 1.0)
- * @returns The created color.
+ * @returns The created color
  */
 declare function rgb(r?: number, g?: number, b?: number, a?: number): ColorComp;
 
@@ -1082,24 +1085,29 @@ declare namespace rgb {
 	 * Red color. rgb(1, 0, 0, 1)
 	 */
 	export const RED: ColorComp;
+
 	/**
 	 * Green color. rgb(0, 1, 0, 1)
 	 */
 	export const GREEN: ColorComp;
+
 	/**
 	 * Blue color. rgb(0, 0, 1, 1)
 	 */
 	export const BLUE: ColorComp;
+
 	/**
 	 * Black color. rgb(0, 0, 0, 1)
 	 */
 	export const BLACK: ColorComp;
+
 	/**
 	 * White color. rgb(1, 1, 1, 1)
 	 */
 	export const WHITE: ColorComp;
+
 	/**
-	 * Create Color from a hex string.
+	 * Create color from a hex string.
 	 * @param hex Hex string in RGB, RGBA, RRGGBB or RRGGBBAA format (with optional initial #).
 	 * @returns The created color.
 	 */
@@ -1110,26 +1118,31 @@ declare namespace rgb {
  * Red color. rgb(1, 0, 0, 1)
  */
 declare const RED: ColorComp;
+
 /**
  * Green color. rgb(0, 1, 0, 1)
  */
 declare const GREEN: ColorComp;
+
 /**
  * Blue color. rgb(0, 0, 1, 1)
  */
 declare const BLUE: ColorComp;
+
 /**
  * Black color. rgb(0, 0, 0, 1)
  */
 declare const BLACK: ColorComp;
+
 /**
  * White color. rgb(1, 1, 1, 1)
  */
 declare const WHITE: ColorComp;
+
 /**
- * Create Color from a hex string.
+ * Create color from a hex string.
  * @param hex Hex string in RGB, RGBA, RRGGBB or RRGGBBAA format (with optional initial #).
- * @returns The created color.
+ * @returns The created color
  */
 declare function from_hex(hex: string): ColorComp;
 
@@ -1141,7 +1154,7 @@ declare function from_hex(hex: string): ColorComp;
  * @param duration Time in seconds to go from start to end value
  * @param easing Which easing algorithm to use (default EASING_LINEAR)
  * @param set_value Function to call when the value has changed
- * @returns A tween object.
+ * @returns A tween object
  */
 declare function tween(
 	from: number | Vec2,
@@ -1156,7 +1169,7 @@ declare function tween(
  */
 interface Tween {
 	/**
-	 * Register an event when finished
+	 * Register an event when finished.
 	 * @param fn The function to call when the tween has finished
 	 */
 	on_end(fn: () => void): void;
@@ -1173,7 +1186,7 @@ interface Tween {
 }
 
 /**
- * Create a Vec2
+ * Create a Vec2.
  * @param x Horizontal position
  * @param y Vertical position
  * @returns The created Vec2
@@ -1256,7 +1269,7 @@ declare function show(id: string, ...args: unknown[]): void;
 declare function wait(seconds: number, cb: () => void): BoomCancelEvent;
 
 /**
- * Run a callback repeatedly with a certain interval
+ * Run a callback repeatedly with a certain interval.
  * @param seconds Interval between calls
  * @param cb Function to call
  * @returns Call to cancel the timer
@@ -1303,43 +1316,43 @@ declare function cam_rot(angle?: number): number;
 declare function cam_zoom(zoom?: number): number;
 
 /**
- * Get gravity
+ * Get gravity.
  * @returns The gravity in pixels per seconds
  */
 declare function get_gravity(): number;
 
 /**
- * Set gravity
+ * Set gravity.
  * @param gravity Gravity in pixels per seconds
  */
 declare function set_gravity(gravity: number): void;
 
 /**
- * Get screen width
+ * Get screen width.
  * @returns Width of screen
  */
 declare function width(): number;
 
 /**
- * Get screen height
+ * Get screen height.
  * @returns Height of screen
  */
 declare function height(): number;
 
 /**
- * Get screen center position
+ * Get screen center position.
  * @returns Center of screen
  */
 declare function center(): Vec2;
 
 /**
- * Get the delta time
+ * Get the delta time.
  * @returns Delta time
  */
 declare function dt(): number;
 
 /**
- * Get time since start
+ * Get time since start.
  * @returns Time since start in seconds
  */
 declare function time(): number;
