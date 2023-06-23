@@ -8,9 +8,6 @@ For use with [TS-Defold](https://github.com/ts-defold) and [TypeScriptToLua](htt
 
 - `unknown` is preferred and `any` is not used.
 - Lua `nil` is described as `undefined` and `null` is not used.
-- The param and type names in the [boom API](https://github.com/britzl/boom/blob/main/api.md) are used unless they're likely to conflict with other libraries.
-  - `GameObject` is renamed `BoomGameObject`.
-  - `Component` is renamed `BoomComponent`.
 
 ## Installation
 
