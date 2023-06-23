@@ -160,7 +160,7 @@ declare module 'boom.boom' {
 }
 
 //
-// game object
+// Game object
 //
 
 /** A game object that may be composed of components. */
@@ -282,33 +282,33 @@ declare type BoomComponentOrTagSet =
 
 /** One of 20 built-in components. */
 declare type BoomComponent =
-	| Anchor
+	| AnchorComp
 	| AreaComp
 	| BodyComp
 	| ColorComp
 	| DoubleJumpComp
 	| FadeInComp
-	| Fixed
+	| FixedComp
 	| HealthComp
-	| Lifespan
-	| Move
-	| Offscreen
-	| Opacity
-	| Pos
-	| Rotate
-	| Scale
-	| Sprite
-	| Stay
-	| Text
-	| Timer
-	| Z;
+	| LifespanComp
+	| MoveComp
+	| OffscreenComp
+	| OpacityComp
+	| PosComp
+	| RotateComp
+	| ScaleComp
+	| SpriteComp
+	| StayComp
+	| TextComp
+	| TimerComp
+	| ZComp;
 
 /**
  * Anchor component. Use this component to offset any rendered component
  * such as a `SpriteComp` from the center of the game object.
  * @noSelf
  */
-interface Anchor {
+interface AnchorComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'anchor';
 }
@@ -460,7 +460,7 @@ interface FadeInComp {
  * Make object unaffected by camera.
  * @noSelf
  */
-interface Fixed {
+interface FixedComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'fixed';
 }
@@ -511,7 +511,7 @@ interface HealthComp {
  * Use this component when you need a game object to be destroyed after a period of time.
  * @noSelf
  */
-interface Lifespan {
+interface LifespanComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'lifespan';
 
@@ -522,7 +522,7 @@ interface Lifespan {
  * Component to move a game object in a direction of travel and at a specific speed.
  * @noSelf
  */
-interface Move {
+interface MoveComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'move';
 
@@ -534,7 +534,7 @@ interface Move {
  * Control the behavior of a game object when it goes out of view.
  * @noSelf
  */
-interface Offscreen {
+interface OffscreenComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'offscreen';
 
@@ -560,7 +560,7 @@ interface Offscreen {
  * Component to control the opacity of a game object.
  * @noSelf
  */
-interface Opacity {
+interface OpacityComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'opacity';
 }
@@ -569,7 +569,7 @@ interface Opacity {
  * Position of a game object.
  * @noSelf
  */
-interface Pos {
+interface PosComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'pos';
 	/**
@@ -589,7 +589,7 @@ interface Pos {
  * Apply rotation to object.
  * @noSelf
  */
-interface Rotate {
+interface RotateComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'rotate';
 
@@ -606,7 +606,7 @@ interface Rotate {
  * Apply a scale to the object.
  * @noSelf
  */
-interface Scale {
+interface ScaleComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'scale';
 
@@ -624,7 +624,7 @@ interface Scale {
  * Render a sprite.
  * @noSelf
  */
-interface Sprite {
+interface SpriteComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'sprite';
 
@@ -651,7 +651,7 @@ interface Sprite {
  * Do not get destroyed on scene switch.
  * @noSelf
  */
-interface Stay {
+interface StayComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'stay';
 }
@@ -660,7 +660,7 @@ interface Stay {
  * Render text.
  * @noSelf
  */
-interface Text {
+interface TextComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'text';
 
@@ -673,7 +673,7 @@ interface Text {
  * Run an action once or repeatedly at a set interval.
  * @noSelf
  */
-interface Timer {
+interface TimerComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'timer';
 
@@ -705,14 +705,14 @@ interface Timer {
  * Object will be drawn on top if z value is bigger.
  * @noSelf
  */
-interface Z {
+interface ZComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'z';
 }
 
 /**
  * Anchor point for render.
- * @param anchor Anchor (center, topleft, left, topright, right, bottomright, bottom, bottomleft)
+ * @param anchor
  * @return The anchor component
  */
 declare function anchor(
@@ -725,7 +725,7 @@ declare function anchor(
 		| 'bottomright'
 		| 'bottom'
 		| 'bottomleft'
-): Anchor;
+): AnchorComp;
 
 /**
  * Create a collider area and enable collision detection.
@@ -777,7 +777,7 @@ declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
 /**
  * Fade in game object visual components such as sprites.
  * @param time In seconds
- * @returns The fade in component.
+ * @returns The fade in component
  */
 declare function fadein(time?: number): FadeInComp;
 
@@ -785,7 +785,7 @@ declare function fadein(time?: number): FadeInComp;
  * Make object unaffected by camera.
  * @returns The component
  */
-declare function fixed(): Fixed;
+declare function fixed(): FixedComp;
 
 /**
  * Add health related logic to game object.
@@ -797,17 +797,20 @@ declare function health(hp?: number): HealthComp;
 /**
  * Destroy the game object after certain amount of time.
  * @param time In seconds
- * @param options Fade out duration (default 0 which is no fade out).
+ * @param options Fade out duration (default 0 which is no fade out)
  */
-declare function lifespan(time: number, options?: { fade?: number }): Lifespan;
+declare function lifespan(
+	time: number,
+	options?: { fade?: number }
+): LifespanComp;
 
 /**
  * Move a game object in a direction of travel and at a specific speed.
- * @param direction Direction of movement.
- * @param speed Speed of movement in pixels per second.
- * @returns The created component.
+ * @param direction Direction of movement
+ * @param speed Speed of movement in pixels per second
+ * @returns The created component
  */
-declare function move(direction: Vec2, speed: number): Move;
+declare function move(direction: Vec2, speed: number): MoveComp;
 
 /**
  * Control the behavior of a game object when it goes out of view.
@@ -817,14 +820,14 @@ declare function move(direction: Vec2, speed: number): Move;
 declare function offscreen(options?: {
 	distance?: number;
 	destroy?: boolean;
-}): Offscreen;
+}): OffscreenComp;
 
 /**
  * Control the opacity of a game object.
  * @param value The opacity from 0.0 to 1.0
  * @returns The created component
  */
-declare function opacity(value?: number): Opacity;
+declare function opacity(value: number): OpacityComp;
 
 /**
  * Control the position of a game object.
@@ -832,14 +835,14 @@ declare function opacity(value?: number): Opacity;
  * @param y
  * @returns The created component
  */
-declare function pos(x: number, y: number): Pos;
+declare function pos(x: number, y: number): PosComp;
 
 /**
  * Apply rotation to the object.
  * @param angle
  * @returns The component
  */
-declare function rotate(angle?: number): Rotate;
+declare function rotate(angle: number): RotateComp;
 
 /**
  * Apply a scale to the object.
@@ -847,15 +850,15 @@ declare function rotate(angle?: number): Rotate;
  * @param y defaults to x
  * @returns The component
  */
-declare function scale(x?: number, y?: number): Scale;
+declare function scale(x: number, y?: number): ScaleComp;
 
 /**
  * Render a sprite.
- * @param sheet
- * @param animations
+ * @param anim Animation or image to use
+ * @param options Extra options (flip_x, flip_y, width, height)
  */
 declare function sprite(
-	anim?: string,
+	anim: string,
 	options?: {
 		atlas?: string | hash;
 		flip_x?: boolean;
@@ -863,13 +866,13 @@ declare function sprite(
 		width?: number;
 		height?: number;
 	}
-): Sprite;
+): SpriteComp;
 
 /**
  * Do not get destroyed on scene switch.
  * @returns The created component
  */
-declare function stay(): Stay;
+declare function stay(): StayComp;
 
 /**
  * Render text.
@@ -878,13 +881,13 @@ declare function stay(): Stay;
  * @returns The created component
  */
 declare function text(
-	text?: string,
+	text: string,
 	options?: {
 		font?: string;
 		align?: 'left' | 'right' | 'center';
 		width?: number;
 	}
-): Text;
+): TextComp;
 
 /**
  * Run certain action after some time.
@@ -892,7 +895,7 @@ declare function text(
  * @param fn The function to call
  * @returns The created component
  */
-declare function timer(n?: number, fn?: () => void): Timer;
+declare function timer(n: number, fn: () => void): TimerComp;
 
 /**
  * Determines the draw order for objects.
@@ -900,7 +903,7 @@ declare function timer(n?: number, fn?: () => void): Timer;
  * @param index Z-value of the object
  * @returns The created component
  */
-declare function z(index?: number): Z;
+declare function z(index: number): ZComp;
 
 //
 // Events
