@@ -2,7 +2,7 @@
 /// <reference types="@typescript-to-lua/language-extensions" />
 /// <reference types="@ts-defold/types" />
 
-/** Callback that receives a `BoomGameObject` as its argument. */
+/** Callback that receives a game object as its argument. */
 declare type BoomObjectCallback = (target: BoomGameObject) => void;
 
 /** Callback that receives a function that cancels an event listener as its argument. */
@@ -11,8 +11,136 @@ declare type BoomEventCallback = (cancel: BoomCancelEvent) => void;
 /** Function that cancels an event listener. */
 declare type BoomCancelEvent = () => void;
 
-/** Tag representing a `BoomComponent`, or any `string` value as a component-less tag. */
+/** Tag representing a component, or any `string` value as a component-less tag. */
 declare type BoomTag = string;
+
+/** Keyboard keys. */
+declare type BoomKey =
+	| 'key_space'
+	| 'key_exclamationmark'
+	| 'key_doublequote'
+	| 'key_hash'
+	| 'key_dollarsign'
+	| 'key_ampersand'
+	| 'key_singlequote'
+	| 'key_lparen'
+	| 'key_rparen'
+	| 'key_asterisk'
+	| 'key_plus'
+	| 'key_comma'
+	| 'key_minus'
+	| 'key_period'
+	| 'key_slash'
+	| 'key_0'
+	| 'key_1'
+	| 'key_2'
+	| 'key_3'
+	| 'key_4'
+	| 'key_5'
+	| 'key_6'
+	| 'key_7'
+	| 'key_8'
+	| 'key_9'
+	| 'key_colon'
+	| 'key_semicolon'
+	| 'key_lessthan'
+	| 'key_equals'
+	| 'key_greaterthan'
+	| 'key_questionmark'
+	| 'key_at'
+	| 'key_a'
+	| 'key_b'
+	| 'key_c'
+	| 'key_d'
+	| 'key_e'
+	| 'key_f'
+	| 'key_g'
+	| 'key_h'
+	| 'key_i'
+	| 'key_j'
+	| 'key_k'
+	| 'key_l'
+	| 'key_m'
+	| 'key_n'
+	| 'key_o'
+	| 'key_p'
+	| 'key_q'
+	| 'key_r'
+	| 'key_s'
+	| 'key_t'
+	| 'key_u'
+	| 'key_v'
+	| 'key_w'
+	| 'key_x'
+	| 'key_y'
+	| 'key_z'
+	| 'key_lbracket'
+	| 'key_rbracket'
+	| 'key_backslash'
+	| 'key_caret'
+	| 'key_underscore'
+	| 'key_grave'
+	| 'key_lbrace'
+	| 'key_rbrace'
+	| 'key_pipe'
+	| 'key_esc'
+	| 'key_f1'
+	| 'key_f2'
+	| 'key_f3'
+	| 'key_f4'
+	| 'key_f5'
+	| 'key_f6'
+	| 'key_f7'
+	| 'key_f8'
+	| 'key_f9'
+	| 'key_f10'
+	| 'key_f11'
+	| 'key_f12'
+	| 'key_up'
+	| 'key_down'
+	| 'key_left'
+	| 'key_right'
+	| 'key_lshift'
+	| 'key_rshift'
+	| 'key_lctrl'
+	| 'key_rctrl'
+	| 'key_lalt'
+	| 'key_ralt'
+	| 'key_tab'
+	| 'key_enter'
+	| 'key_backspace'
+	| 'key_insert'
+	| 'key_del'
+	| 'key_pageup'
+	| 'key_pagedown'
+	| 'key_home'
+	| 'key_end'
+	| 'key_numpad_0'
+	| 'key_numpad_1'
+	| 'key_numpad_2'
+	| 'key_numpad_3'
+	| 'key_numpad_4'
+	| 'key_numpad_5'
+	| 'key_numpad_6'
+	| 'key_numpad_7'
+	| 'key_numpad_8'
+	| 'key_numpad_9'
+	| 'key_numpad_divide'
+	| 'key_numpad_multiply'
+	| 'key_numpad_subtract'
+	| 'key_numpad_add'
+	| 'key_numpad_decimal'
+	| 'key_numpad_equal'
+	| 'key_numpad_enter'
+	| 'key_numpad_numlock'
+	| 'key_capslock'
+	| 'key_scrolllock'
+	| 'key_pause'
+	| 'key_lsuper'
+	| 'key_rsuper'
+	| 'key_menu'
+	| 'key_back'
+	| '*';
 
 //
 // Start
@@ -32,7 +160,7 @@ declare module 'boom.boom' {
 }
 
 //
-// Game Object
+// game object
 //
 
 /** A game object that may be composed of components. */
@@ -44,43 +172,46 @@ declare type BoomGameObject = BoomBlankGameObject & Partial<BoomComponent>;
  */
 interface BoomBlankGameObject {
 	/**
-	 * Add a `BoomGameObject` as a child of this `BoomGameObject`
-	 * by composing it with `BoomComponent`s.
+	 * Add a game object as a child of this game object
+	 * by composing it with components.
 	 * @param comps The game object components
 	 * @returns The game object
 	 */
 	add(comps: BoomComponentOrTagSet): BoomGameObject;
 
 	/**
-	 * Destroy this `BoomGameObject`.
+	 * Destroy this game object.
 	 */
 	destroy(): void;
 
 	/**
-	 * Check if there is a certain tag on this `BoomGameObject`.
+	 * Check if there is a certain tag on this game object.
 	 * @param tag The tag to check
 	 * @returns Returns true if the tag exists on the game object
 	 */
 	is(tag: BoomTag): boolean;
 
 	/**
-	 * Add a `BoomComponent` to this `BoomGameObject`.
+	 * Add a component to this game object.
 	 * @param comp The component to use
 	 */
 	use(comp: BoomComponent): void;
 
 	/**
-	 * Remove a `BoomComponent` from this `BoomGameObject`.
+	 * Remove a component from this game object.
 	 * @param tag The component tag to remove
 	 */
 	unuse(tag: BoomTag): void;
 
 	/**
-	 * Get state for a specific component on this `BoomGameObject`.
+	 * Get state for a specific component on this game object.
 	 * @param tag The component to get state for
 	 * @returns The component state
 	 */
-	c(tag: BoomTag): object;
+	c(tag: BoomTag): BoomGameObject & {
+		readonly tag: BoomTag;
+		// readonly __url: url;
+	};
 
 	readonly dirty: boolean;
 	readonly children: LuaMap;
@@ -108,10 +239,10 @@ declare function add(comps: BoomComponentOrTagSet): BoomGameObject;
 declare function destroy(object: BoomGameObject): void;
 
 /**
- * Destroy all objects with a certain tag.
+ * Destroy all game objects with a certain tag.
  * @param tag The tag to destroy or undefined to destroy all objects
  */
-declare function destroy_all(tag?: string): void;
+declare function destroy_all(tag?: BoomTag): void;
 
 /**
  * Get game object with specific id.
@@ -131,25 +262,25 @@ declare function objects(): LuaSet<BoomGameObject>;
  * @param tag The tag to get objects for, undefined to get all objects
  * @returns List of objects
  */
-declare function get(tag?: string): LuaSet<BoomGameObject>;
+declare function get(tag?: BoomTag): LuaSet<BoomGameObject>;
 
 /**
- * Run callback on every object with a certain tag.
+ * Run callback on every game object with a certain tag.
  * @param tag The tag that must exist on the object
  * @param cb The callback to run
  */
-declare function every(tag: string, cb: BoomObjectCallback): void;
+declare function every(tag: BoomTag, cb: BoomObjectCallback): void;
 
 //
 // Components
 //
 
-/** A set of Components. Optionally, arbitrary strings can be used as tags. */
+/** A set of components and/or arbitrary `string`s used as component-less tags. */
 declare type BoomComponentOrTagSet =
 	| Array<BoomComponent | BoomTag>
 	| LuaSet<BoomComponent | BoomTag>;
 
-/** One of 20 built-in Components. */
+/** One of 20 built-in components. */
 declare type BoomComponent =
 	| Anchor
 	| AreaComp
@@ -174,11 +305,11 @@ declare type BoomComponent =
 
 /**
  * Anchor component. Use this component to offset any rendered component
- * such as a SpriteComp from the center of the game object.
+ * such as a `SpriteComp` from the center of the game object.
  * @noSelf
  */
 interface Anchor {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'anchor';
 }
 
@@ -189,19 +320,19 @@ interface Anchor {
  * @noSelf
  */
 interface AreaComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'area';
 
 	/**
 	 * Get all collisions currently happening for this component.
-	 * @returns List of collisions
+	 * @returns Set of collisions
 	 */
 	get_collisions(): BoomCollision[] | LuaSet<BoomCollision>;
 
 	/**
 	 * Check collision between this component and another object.
 	 * @param other_object The game object to check collisions with.
-	 * @returns boolean (Return true if colliding with the other object), Collision data
+	 * @returns boolean (`true` if colliding with the other object), Collision data
 	 */
 	check_collision(
 		other_object: BoomGameObject
@@ -212,7 +343,7 @@ interface AreaComp {
 	 * @param tag Optional tag which colliding object must have, undefined for all collisions
 	 * @param cb Function to call when collision is detected
 	 */
-	on_collide(tag: string | undefined, cb: (data: BoomCollision) => void): void;
+	on_collide(tag: BoomTag | undefined, cb: (data: BoomCollision) => void): void;
 
 	/**
 	 * Register event listener when this component is clicked.
@@ -223,7 +354,7 @@ interface AreaComp {
 	/**
 	 * Check if a point is within the area of this component.
 	 * @param point The point to check
-	 * @returns boolean Will return true if point is within area
+	 * @returns `true` if point is within area
 	 */
 	has_point(point: undefined): boolean;
 
@@ -235,16 +366,16 @@ interface AreaComp {
 
 /**
  * Physical body that responds to gravity.
- * Requires AreaComp and PosComp components on the game object.
+ * Requires `AreaComp` and `PosComp` components on the game object.
  * This also makes the object solid.
  * @noSelf
  */
 interface BodyComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'body';
 
 	/**
-	 * Add upward force
+	 * Add upward force.
 	 * @param force The upward force to apply
 	 */
 	jump(force: number): void;
@@ -265,7 +396,7 @@ interface BodyComp {
  * @noSelf
  */
 interface ColorComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'color';
 
 	/**
@@ -273,23 +404,23 @@ interface ColorComp {
 	 */
 	readonly color: {
 		/**
-		 * Darkens the Color.
+		 * Darkens the color.
 		 * @param n Amount to darken color by
 		 */
 		darken: (n: number) => ColorComp;
 
 		/**
-		 * Invert the Color.
+		 * Invert the color.
 		 */
 		invert: () => ColorComp;
 
 		/**
-		 * Clone the Color.
+		 * Clone the color.
 		 */
 		clone: () => ColorComp;
 
 		/**
-		 * Lighten the Color.
+		 * Lighten the color.
 		 * @param n Amount to lighten color by
 		 */
 		lighten: (n: number) => ColorComp;
@@ -297,11 +428,11 @@ interface ColorComp {
 }
 
 /**
- * Enables double jump. Requires "body" component.
+ * Enables double jump. Requires `BodyComp` component.
  * @noSelf
  */
 interface DoubleJumpComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'double_jump';
 
 	/**
@@ -319,7 +450,7 @@ interface DoubleJumpComp {
  * @noSelf
  */
 interface FadeInComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'fadein';
 
 	// init: Function;
@@ -330,7 +461,7 @@ interface FadeInComp {
  * @noSelf
  */
 interface Fixed {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'fixed';
 }
 
@@ -339,17 +470,17 @@ interface Fixed {
  * @noSelf
  */
 interface HealthComp {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'health';
 
 	/**
-	 * Register an event that runs when heal() is called.
+	 * Register an event that runs when `heal()` is called.
 	 * @param cb Function to call
 	 */
 	on_heal(cb: () => void): void;
 
 	/**
-	 * Register an event that runs when hurt() is called.
+	 * Register an event that runs when `hurt()` is called.
 	 * @param cb Function to call
 	 */
 	on_hurt(cb: () => void): void;
@@ -361,13 +492,13 @@ interface HealthComp {
 	on_death(cb: () => void): void;
 
 	/**
-	 * Increase hp. Will trigger on_heal.
+	 * Increase health. Will trigger `on_heal`.
 	 * @param n Amount to increase
 	 */
 	heal(n: number): void;
 
 	/**
-	 * Decrease hp. Will trigger on_hurt
+	 * Decrease health. Will trigger `on_hurt`.
 	 * @param n Amount to decrease
 	 */
 	hurt(n: number): void;
@@ -381,7 +512,7 @@ interface HealthComp {
  * @noSelf
  */
 interface Lifespan {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'lifespan';
 
 	// init: Function;
@@ -392,7 +523,7 @@ interface Lifespan {
  * @noSelf
  */
 interface Move {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'move';
 
 	// update: Function;
@@ -404,17 +535,17 @@ interface Move {
  * @noSelf
  */
 interface Offscreen {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'offscreen';
 
 	/**
-	 * Register a callback that runs when the object goes out of view
+	 * Register a callback that runs when the object goes out of view.
 	 * @param cb Function to call when the object goes out of view
 	 */
 	on_exit_screen(cb: () => void): void;
 
 	/**
-	 * Register a callback that runs when the object enters view
+	 * Register a callback that runs when the object enters view.
 	 * @param cb Function to call when the object enters view
 	 */
 	on_enter_screen(cb: () => void): void;
@@ -430,7 +561,7 @@ interface Offscreen {
  * @noSelf
  */
 interface Opacity {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'opacity';
 }
 
@@ -439,7 +570,7 @@ interface Opacity {
  * @noSelf
  */
 interface Pos {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'pos';
 	/**
 	 * Move a number of pixels per second.
@@ -459,11 +590,11 @@ interface Pos {
  * @noSelf
  */
 interface Rotate {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'rotate';
 
 	/**
-	 * Updates rotation
+	 * Updates rotation.
 	 * @param angle in degrees
 	 */
 	rotate: (angle: number) => void;
@@ -476,11 +607,11 @@ interface Rotate {
  * @noSelf
  */
 interface Scale {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'scale';
 
 	/**
-	 * Rescales object
+	 * Rescales object.
 	 * @param x
 	 * @param y defaults to x
 	 */
@@ -494,17 +625,17 @@ interface Scale {
  * @noSelf
  */
 interface Sprite {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'sprite';
 
 	/**
-	 * Play an animation
+	 * Play an animation.
 	 * @param anim The animation to play
 	 */
 	play(anim: string): void;
 
 	/**
-	 * Stop the current animation
+	 * Stop the current animation.
 	 */
 	stop(): void;
 
@@ -521,7 +652,7 @@ interface Sprite {
  * @noSelf
  */
 interface Stay {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'stay';
 }
 
@@ -530,7 +661,7 @@ interface Stay {
  * @noSelf
  */
 interface Text {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'text';
 
 	// init: Function;
@@ -543,25 +674,25 @@ interface Text {
  * @noSelf
  */
 interface Timer {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'timer';
 
 	/**
-	 * Run a callback function after n seconds
+	 * Run a callback function after n seconds.
 	 * @param n Seconds
 	 * @param fn The function to call
 	 */
 	wait(n: number, fn: () => void): void;
 
 	/**
-	 * Run a callback function every n seconds
+	 * Run a callback function every n seconds.
 	 * @param n Seconds
 	 * @param fn The function to call
 	 */
 	loop(n: number, fn: () => void): void;
 
 	/**
-	 * Cancel the timer
+	 * Cancel the timer.
 	 */
 	cancel(): void;
 
@@ -575,14 +706,14 @@ interface Timer {
  * @noSelf
  */
 interface Z {
-	/** Pushed into the `tags` map when added to a Game Object. */
+	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'z';
 }
 
 /**
  * Anchor point for render.
  * @param anchor Anchor (center, topleft, left, topright, right, bottomright, bottom, bottomleft)
- * @return The anchor component.
+ * @return The anchor component
  */
 declare function anchor(
 	anchor:
@@ -611,8 +742,8 @@ declare function area(options?: {
 }): AreaComp;
 
 /**
- * Physical body that responds to gravity. Requires AreaComp
- * and PosComp components on the game object. This also makes the object solid.
+ * Physical body that responds to gravity. Requires `AreaComp`
+ * and `PosComp` components on the game object. This also makes the object solid.
  * @param options Component options (jump_force, is_static)
  * @returns The body component
  */
@@ -766,7 +897,7 @@ declare function timer(n?: number, fn?: () => void): Timer;
 /**
  * Determines the draw order for objects.
  * Object will be drawn on top if z value is bigger.
- * @param index Z-value of the object.
+ * @param index Z-value of the object
  * @returns The created component
  */
 declare function z(index?: number): Z;
@@ -794,8 +925,8 @@ interface BoomCollision {
  * @returns Cancel event function
  */
 declare function on_collide(
-	tag1: string,
-	tag2: string | undefined,
+	tag1: BoomTag,
+	tag2: BoomTag | undefined,
 	fn: (collision: BoomCollision, cancel: BoomCancelEvent) => void
 ): BoomCancelEvent;
 
@@ -806,7 +937,7 @@ declare function on_collide(
  * @returns Cancel callback
  */
 declare function on_key_press(
-	key_id: string,
+	key_id: BoomKey,
 	cb: BoomEventCallback
 ): BoomCancelEvent;
 
@@ -817,7 +948,7 @@ declare function on_key_press(
  * @returns Cancel callback
  */
 declare function on_key_release(
-	key_id: string,
+	key_id: BoomKey,
 	cb: BoomEventCallback
 ): BoomCancelEvent;
 
@@ -828,7 +959,7 @@ declare function on_key_release(
  * @returns Cancel listener function
  */
 declare function on_click(
-	tag: string | undefined,
+	tag: BoomTag | undefined,
 	cb: BoomObjectCallback
 ): BoomCancelEvent;
 
@@ -860,7 +991,7 @@ declare function on_mouse_move(cb: () => void): BoomCancelEvent;
  * @param fn The event function to call. Will receive object and cancel function.
  */
 declare function on_update(
-	tag: string | undefined,
+	tag: BoomTag | undefined,
 	fn: (
 		object: BoomGameObject,
 		cancel: (object: BoomGameObject, cancel: BoomCancelEvent) => void
@@ -1138,7 +1269,7 @@ declare function loop(seconds: number, cb: () => void): BoomCancelEvent;
  * @param key_id The key that must be down, or undefined for any key
  * @returns True if down
  */
-declare function is_key_down(key_id?: string): boolean;
+declare function is_key_down(key_id?: BoomKey): boolean;
 
 /**
  * Get mouse position (screen coordinates).
