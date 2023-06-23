@@ -1,17 +1,16 @@
 # @types/tsd-boom
 
-Types for britzl's [boom](https://github.com/britzl/boom/), a game framework built on top of [Defold](https://defold.com/). For use with [TS-Defold](https://github.com/ts-defold) and [TypeScriptToLua](https://github.com/TypeScriptToLua).
+TypeScript types for britzl's [boom](https://github.com/britzl/boom/), a game framework built on top of [Defold](https://defold.com/).
 
-## Work in progress
-
-This project's goal is to accurately describe boom's public API. Some undocumented properties may be added, but they are subject to change.
+For use with [TS-Defold](https://github.com/ts-defold) and [TypeScriptToLua](https://github.com/TypeScriptToLua).
 
 ## Style
 
-- `unknown` is preferred over `any`, although neither should be necessary in most cases.
-- Lua `nil` should be described as `undefined`. `null` should not be used.
-- Prefer sticking to the param and type names in the boom API unless they're likely to conflict with other libraries.
-  - `GameObject` and `Component` were renamed for being too generic.
+- `unknown` is preferred and `any` is not used.
+- Lua `nil` is described as `undefined` and `null` is not used.
+- The param and type names in the [boom API](https://github.com/britzl/boom/blob/main/api.md) are used unless they're likely to conflict with other libraries.
+  - `GameObject` is renamed `BoomGameObject`.
+  - `Component` is renamed `BoomComponent`.
 
 ## Installation
 
@@ -20,13 +19,34 @@ This project's goal is to accurately describe boom's public API. Some undocument
 3. Import these types
 
 ```bash
-yarn add git+https://git@github.com/thinknathan/tsd-boom-types.git -D
+yarn add git+https://git@github.com/thinknathan/tsd-boom-types.git#^1.0.0 -D
 # or
-npm install git+https://git@github.com/thinknathan/tsd-boom-types.git --save-dev
+npm install git+https://git@github.com/thinknathan/tsd-boom-types.git#^1.0.0 --save-dev
 ```
 
 4. Add `tsd-boom` to `types` in `tsconfig.json`
+
+```diff
+{
+	"compilerOptions": {
+		"types": [
++			"tsd-boom",
+		],
+	}
+}
+```
+
 5. Add `node_modules/@types` to `typeRoots` in `tsconfig.json` if it's not already there
+
+```diff
+{
+	"compilerOptions": {
+		"typeRoots": [
++			"node_modules/@types",
+		],
+	}
+}
+```
 
 ## Usage
 
