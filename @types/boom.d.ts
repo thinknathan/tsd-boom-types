@@ -15,7 +15,7 @@ declare type BoomCancelEvent = () => void;
 declare type BoomTag = string;
 
 /** Keyboard keys. */
-declare type BoomKey =
+declare type BoomKeyboardKey =
 	| 'key_space'
 	| 'key_exclamationmark'
 	| 'key_doublequote'
@@ -940,7 +940,7 @@ declare function on_collide(
  * @returns Cancel callback
  */
 declare function on_key_press(
-	key_id: BoomKey,
+	key_id: BoomKeyboardKey,
 	cb: BoomEventCallback
 ): BoomCancelEvent;
 
@@ -951,7 +951,7 @@ declare function on_key_press(
  * @returns Cancel callback
  */
 declare function on_key_release(
-	key_id: BoomKey,
+	key_id: BoomKeyboardKey,
 	cb: BoomEventCallback
 ): BoomCancelEvent;
 
@@ -1285,7 +1285,7 @@ declare function loop(seconds: number, cb: () => void): BoomCancelEvent;
  * @param key_id The key that must be down, or undefined for any key
  * @returns True if down
  */
-declare function is_key_down(key_id?: BoomKey): boolean;
+declare function is_key_down(key_id?: BoomKeyboardKey): boolean;
 
 /**
  * Get mouse position (screen coordinates).
