@@ -731,17 +731,17 @@ interface SpriteComp {
 	/**
 	 * The current animation.
 	 */
-	anim: string;
+	readonly anim: string;
 
 	/**
 	 * The width of the sprite.
 	 */
-	width: number;
+	readonly width: number;
 
 	/**
 	 * The height of the sprite.
 	 */
-	height: number;
+	readonly height: number;
 
 	/**
 	 * If sprite should be flipped horizontally.
@@ -1330,7 +1330,7 @@ interface Tween {
 declare function vec2(x?: number, y?: number): Vec2;
 
 /**
- * When vec2 is called as an object instead of as a function.
+ * When `vec2` is called as an object instead of as a function.
  */
 declare namespace vec2 {
 	/**
