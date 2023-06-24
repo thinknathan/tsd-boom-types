@@ -142,6 +142,50 @@ declare type BoomKeyboardKey =
 	| 'key_back'
 	| '*';
 
+/** Defold Easing types. */
+declare type BoomEasing =
+	| typeof go.EASING_INBACK
+	| typeof go.EASING_INBOUNCE
+	| typeof go.EASING_INCIRC
+	| typeof go.EASING_INCUBIC
+	| typeof go.EASING_INELASTIC
+	| typeof go.EASING_INEXPO
+	| typeof go.EASING_INOUTBACK
+	| typeof go.EASING_INOUTBOUNCE
+	| typeof go.EASING_INOUTCIRC
+	| typeof go.EASING_INOUTCUBIC
+	| typeof go.EASING_INOUTELASTIC
+	| typeof go.EASING_INOUTEXPO
+	| typeof go.EASING_INOUTQUAD
+	| typeof go.EASING_INOUTQUART
+	| typeof go.EASING_INOUTQUINT
+	| typeof go.EASING_INOUTSINE
+	| typeof go.EASING_INQUAD
+	| typeof go.EASING_INQUART
+	| typeof go.EASING_INQUINT
+	| typeof go.EASING_INSINE
+	| typeof go.EASING_LINEAR
+	| typeof go.EASING_OUTBACK
+	| typeof go.EASING_OUTBOUNCE
+	| typeof go.EASING_OUTCIRC
+	| typeof go.EASING_OUTCUBIC
+	| typeof go.EASING_OUTELASTIC
+	| typeof go.EASING_OUTEXPO
+	| typeof go.EASING_OUTINBACK
+	| typeof go.EASING_OUTINBOUNCE
+	| typeof go.EASING_OUTINCIRC
+	| typeof go.EASING_OUTINCUBIC
+	| typeof go.EASING_OUTINELASTIC
+	| typeof go.EASING_OUTINEXPO
+	| typeof go.EASING_OUTINQUAD
+	| typeof go.EASING_OUTINQUART
+	| typeof go.EASING_OUTINQUINT
+	| typeof go.EASING_OUTINSINE
+	| typeof go.EASING_OUTQUAD
+	| typeof go.EASING_OUTQUART
+	| typeof go.EASING_OUTQUINT
+	| typeof go.EASING_OUTSINE;
+
 //
 // Start
 //
@@ -210,7 +254,7 @@ interface BoomBlankGameObject {
 	 */
 	c(tag: BoomTag): BoomGameObject & {
 		readonly tag: BoomTag;
-		// readonly __url: url;
+		readonly __url?: url;
 	};
 
 	readonly dirty: boolean;
@@ -220,9 +264,9 @@ interface BoomBlankGameObject {
 	readonly id: hash;
 	readonly ids: LuaMap<hash, hash>;
 	readonly tags: LuaMap<string | hash, boolean>;
-	// readonly pre_update: LuaSet<Function>;
-	// readonly update: LuaSet<Function>;
-	// readonly post_update: LuaSet<Function>;
+	readonly pre_update?: LuaSet<Function>;
+	readonly update?: LuaSet<Function>;
+	readonly post_update?: LuaSet<Function>;
 }
 
 /**
@@ -311,6 +355,8 @@ declare type BoomComponent =
 interface AnchorComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'anchor';
+
+	anchor: Vec2;
 }
 
 /**
@@ -358,10 +404,10 @@ interface AreaComp {
 	 */
 	has_point(point: undefined): boolean;
 
-	// update: Function;
-	// destroy: Function;
-	// init: Function;
-	// pre_update: Function;
+	readonly init?: () => void;
+	readonly pre_update?: () => void;
+	readonly update?: (dt: number) => void;
+	readonly destroy?: () => void;
 }
 
 /**
@@ -383,12 +429,12 @@ interface BodyComp {
 	readonly is_jumping: boolean;
 	readonly is_grounded: boolean;
 	readonly is_falling: boolean;
-	readonly is_static: boolean;
-	readonly jump_force: number;
-	// update: Function;
-	// destroy: Function;
-	// init: Function;
-	// pre_update: Function;
+	readonly jump_force: number; // TO-DO should this be mutable?
+	readonly is_static: boolean; // TO-DO should this be mutable?
+	readonly update?: (dt: number) => void;
+	readonly destroy?: () => void;
+	readonly init?: () => void;
+	readonly pre_update?: () => void;
 }
 
 /**
@@ -407,23 +453,43 @@ interface ColorComp {
 		 * Darkens the color.
 		 * @param n Amount to darken color by
 		 */
-		darken: (n: number) => ColorComp;
+		readonly darken: (n: number) => ColorComp;
 
 		/**
 		 * Invert the color.
 		 */
-		invert: () => ColorComp;
+		readonly invert: () => ColorComp;
 
 		/**
 		 * Clone the color.
 		 */
-		clone: () => ColorComp;
+		readonly clone: () => ColorComp;
 
 		/**
 		 * Lighten the color.
 		 * @param n Amount to lighten color by
 		 */
-		lighten: (n: number) => ColorComp;
+		readonly lighten: (n: number) => ColorComp;
+
+		/**
+		 * The red color component. (0.0 to 1.0).
+		 */
+		r: number;
+
+		/**
+		 * The green color component. (0.0 to 1.0).
+		 */
+		g: number;
+
+		/**
+		 * The blue color component. (0.0 to 1.0).
+		 */
+		b: number;
+
+		/**
+		 * The alpha (tranparency) of the color. (0.0 to 1.0).
+		 */
+		a: number;
 	};
 }
 
@@ -441,8 +507,8 @@ interface DoubleJumpComp {
 	 */
 	double_jump(force: number): void;
 
-	readonly num_jumps: number;
-	// init: Function;
+	readonly num_jumps: number; // TO-DO should this be mutable?
+	readonly init?: () => void;
 }
 
 /**
@@ -453,7 +519,7 @@ interface FadeInComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'fadein';
 
-	// init: Function;
+	readonly init?: () => void;
 }
 
 /**
@@ -486,24 +552,26 @@ interface HealthComp {
 	on_hurt(cb: () => void): void;
 
 	/**
-	 * Register an event that runs when health is 0 or less.
+	 * Register an event that runs when hp is 0 or less.
 	 * @param cb Function to call
 	 */
 	on_death(cb: () => void): void;
 
 	/**
-	 * Increase health. Will trigger `on_heal`.
+	 * Increase hp. Will trigger `on_heal`.
 	 * @param n Amount to increase
 	 */
 	heal(n: number): void;
 
 	/**
-	 * Decrease health. Will trigger `on_hurt`.
+	 * Decrease hp. Will trigger `on_hurt`.
 	 * @param n Amount to decrease
 	 */
 	hurt(n: number): void;
 
-	// destroy: Function;
+	hp: number;
+
+	readonly destroy?: () => void;
 }
 
 /**
@@ -515,7 +583,7 @@ interface LifespanComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'lifespan';
 
-	// init: Function;
+	readonly init?: () => void;
 }
 
 /**
@@ -526,8 +594,11 @@ interface MoveComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'move';
 
-	// update: Function;
-	// init: Function;
+	readonly direction: Vec2; // TO-DO should this be mutable?
+	readonly speed: number; // TO-DO should this be mutable?
+
+	readonly init?: () => void;
+	readonly update?: (dt: number) => void;
 }
 
 /**
@@ -551,9 +622,9 @@ interface OffscreenComp {
 	on_enter_screen(cb: () => void): void;
 
 	readonly is_offscreen: boolean;
-	// update: Function;
-	// init: Function;
-	// destroy: Function;
+	readonly update?: (dt: number) => void;
+	readonly init?: () => void;
+	readonly destroy?: () => void;
 }
 
 /**
@@ -563,6 +634,11 @@ interface OffscreenComp {
 interface OpacityComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'opacity';
+
+	/**
+	 * The opacity of the component instance. (0.0 to 1.0).
+	 */
+	opacity: number;
 }
 
 /**
@@ -572,6 +648,7 @@ interface OpacityComp {
 interface PosComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'pos';
+
 	/**
 	 * Move a number of pixels per second.
 	 * @param x
@@ -579,10 +656,14 @@ interface PosComp {
 	 */
 	move(x: number, y: number): void;
 
-	readonly vel: Vec2;
-	readonly pos: Vec2;
-	// update: Function;
-	// init: Function;
+	/** Position in 2D space. */
+	pos: Vec2;
+
+	/** Velocity. */
+	vel: Vec2;
+
+	readonly update?: (dt: number) => void;
+	readonly init?: () => void;
 }
 
 /**
@@ -599,7 +680,8 @@ interface RotateComp {
 	 */
 	rotate: (angle: number) => void;
 
-	// init: Function;
+	readonly angle: number;
+	readonly init?: () => void;
 }
 
 /**
@@ -611,13 +693,20 @@ interface ScaleComp {
 	readonly tag?: 'scale';
 
 	/**
-	 * Rescales object.
+	 * Set new scale.
 	 * @param x
 	 * @param y defaults to x
 	 */
 	scale_to: (x: number, y?: number) => void;
 
-	readonly scale: vmath.vector3;
+	/**
+	 * Change scale.
+	 * @param x
+	 * @param y defaults to x
+	 */
+	scale_by: (x: number, y?: number) => void;
+
+	readonly scale: Vec2;
 }
 
 /**
@@ -639,12 +728,35 @@ interface SpriteComp {
 	 */
 	stop(): void;
 
-	readonly height: number;
-	readonly width: number;
-	// init: Function;
-	// pre_update: Function;
-	// destroy: Function;
-	// update: Function;
+	/**
+	 * The current animation.
+	 */
+	anim: string;
+
+	/**
+	 * The width of the sprite.
+	 */
+	width: number;
+
+	/**
+	 * The height of the sprite.
+	 */
+	height: number;
+
+	/**
+	 * If sprite should be flipped horizontally.
+	 */
+	flip_x: boolean;
+
+	/**
+	 * If the sprite should be flipped vertically.
+	 */
+	flip_y: boolean;
+
+	readonly init?: () => void;
+	readonly pre_update?: (dt: number) => void;
+	readonly destroy?: () => void;
+	readonly update?: (dt: number) => void;
 }
 
 /**
@@ -664,9 +776,14 @@ interface TextComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'text';
 
-	// init: Function;
-	// destroy: Function;
-	// update: Function;
+	/**
+	 * The text to render.
+	 */
+	text: string;
+
+	readonly init?: () => void;
+	readonly destroy?: () => void;
+	readonly update?: (dt: number) => void;
 }
 
 /**
@@ -696,8 +813,8 @@ interface TimerComp {
 	 */
 	cancel(): void;
 
-	// destroy: Function;
-	// init: Function;
+	readonly destroy?: () => void;
+	readonly init?: () => void;
 }
 
 /**
@@ -708,6 +825,11 @@ interface TimerComp {
 interface ZComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'z';
+
+	/**
+	 * The z value.
+	 */
+	z: number;
 }
 
 /**
@@ -754,10 +876,10 @@ declare function body(options?: {
 
 /**
  * Control the color of the game object.
- * @param r Red
- * @param g Green
- * @param b Blue
- * @param a Optional alpha
+ * @param r Red (0.0 to 1.0)
+ * @param g Green (0.0 to 1.0)
+ * @param b Blue (0.0 to 1.0)
+ * @param a Optional alpha (0.0 to 1.0)
  * @returns The color component
  */
 declare function color(
@@ -962,9 +1084,10 @@ declare function on_key_release(
  * @returns Cancel listener function
  */
 declare function on_click(
-	tag: BoomTag | undefined,
+	tag: BoomTag,
 	cb: BoomObjectCallback
 ): BoomCancelEvent;
+declare function on_click(cb: BoomObjectCallback): BoomCancelEvent;
 
 /**
  * Register callback that runs when left mouse button is pressed.
@@ -994,7 +1117,13 @@ declare function on_mouse_move(cb: () => void): BoomCancelEvent;
  * @param fn The event function to call. Will receive object and cancel function.
  */
 declare function on_update(
-	tag: BoomTag | undefined,
+	tag: BoomTag,
+	fn: (
+		object: BoomGameObject,
+		cancel: (object: BoomGameObject, cancel: BoomCancelEvent) => void
+	) => void
+): void;
+declare function on_update(
 	fn: (
 		object: BoomGameObject,
 		cancel: (object: BoomGameObject, cancel: BoomCancelEvent) => void
@@ -1157,11 +1286,18 @@ declare function from_hex(hex: string): ColorComp;
  * @returns A tween object
  */
 declare function tween(
-	from: number | Vec2,
-	to: number | Vec2,
+	from: number,
+	to: number,
 	duration: number,
-	easing: string | undefined,
-	set_value: (endValue: number | Vec2) => void
+	easing: BoomEasing | undefined,
+	set_value: (endValue: number) => void
+): Tween;
+declare function tween(
+	from: Vec2,
+	to: Vec2,
+	duration: number,
+	easing: BoomEasing | undefined,
+	set_value: (endValue: Vec2) => void
 ): Tween;
 
 /**
@@ -1200,22 +1336,22 @@ declare namespace vec2 {
 	/**
 	 * UP vector Vec2(0, 1)
 	 */
-	const UP: Vec2;
+	export const UP: Vec2;
 
 	/**
 	 * RIGHT vector Vec2(1, 0)
 	 */
-	const RIGHT: Vec2;
+	export const RIGHT: Vec2;
 
 	/**
 	 * DOWN vector Vec2(0, -1)
 	 */
-	const DOWN: Vec2;
+	export const DOWN: Vec2;
 
 	/**
 	 * LEFT vector Vec2(-1, 0)
 	 */
-	const LEFT: Vec2;
+	export const LEFT: Vec2;
 }
 
 /**
