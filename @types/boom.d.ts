@@ -1435,21 +1435,24 @@ declare function mouse_pos(): Vec2;
  * @param y
  * @returns Camera position
  */
-declare function cam_pos(x?: number | Vec2, y?: number): Vec2;
+declare function cam_pos(x: number | Vec2, y?: number): void;
+declare function cam_pos(): Vec2;
 
 /**
  * Get or set camera rotation.
  * @param angle The angle to set or undefined to get current rotation
  * @returns The camera rotation in degrees
  */
-declare function cam_rot(angle?: number): number;
+declare function cam_rot(angle?: number): void;
+declare function cam_rot(): number;
 
 /**
  * Get or set the camera zoom.
  * @param zoom The zoom to set or undefined to get the current zoom.
  * @returns The camera zoom
  */
-declare function cam_zoom(zoom?: number): number;
+declare function cam_zoom(zoom: number): void;
+declare function cam_zoom(): number;
 
 /**
  * Get gravity.
