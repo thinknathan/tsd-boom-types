@@ -1443,7 +1443,7 @@ declare function cam_pos(): Vec2;
  * @param angle The angle to set or undefined to get current rotation
  * @returns The camera rotation in degrees
  */
-declare function cam_rot(angle?: number): void;
+declare function cam_rot(angle: number): void;
 declare function cam_rot(): number;
 
 /**
