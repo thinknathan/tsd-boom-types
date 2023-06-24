@@ -1118,17 +1118,9 @@ declare function on_mouse_move(cb: () => void): BoomCancelEvent;
  */
 declare function on_update(
 	tag: BoomTag,
-	fn: (
-		object: BoomGameObject,
-		cancel: (object: BoomGameObject, cancel: BoomCancelEvent) => void
-	) => void
+	fn: (object: BoomGameObject, cancel: BoomCancelEvent) => void
 ): void;
-declare function on_update(
-	fn: (
-		object: BoomGameObject,
-		cancel: (object: BoomGameObject, cancel: BoomCancelEvent) => void
-	) => void
-): void;
+declare function on_update(fn: (cancel: BoomCancelEvent) => void): void;
 
 //
 // Level
