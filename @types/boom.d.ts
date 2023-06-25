@@ -356,6 +356,9 @@ interface AnchorComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'anchor';
 
+	/**
+	 * Anchor point.
+	 */
 	anchor: Vec2;
 }
 
@@ -426,11 +429,31 @@ interface BodyComp {
 	 */
 	jump(force: number): void;
 
+	/**
+	 * If the body is jumping (velocity is pointing up).
+	 */
 	readonly is_jumping: boolean;
+
+	/**
+	 * If the body is in contact with ground.
+	 */
 	readonly is_grounded: boolean;
+
+	/**
+	 * If the body is falling (velocity is pointing down).
+	 */
 	readonly is_falling: boolean;
+
+	/**
+	 * The upward velocity applied to the body when jumping.
+	 */
 	readonly jump_force: number; // TO-DO should this be mutable?
+
+	/**
+	 * If the body is static and not affected by gravity.
+	 */
 	readonly is_static: boolean; // TO-DO should this be mutable?
+
 	readonly update?: (dt: number) => void;
 	readonly destroy?: () => void;
 	readonly init?: () => void;
@@ -446,7 +469,7 @@ interface ColorComp {
 	readonly tag?: 'color';
 
 	/**
-	 * Functions for modifying color.
+	 * Current color.
 	 */
 	readonly color: {
 		/**
@@ -507,7 +530,11 @@ interface DoubleJumpComp {
 	 */
 	double_jump(force: number): void;
 
+	/**
+	 * Maximum number of jumps.
+	 */
 	readonly num_jumps: number; // TO-DO should this be mutable?
+
 	readonly init?: () => void;
 }
 
@@ -569,6 +596,9 @@ interface HealthComp {
 	 */
 	hurt(n: number): void;
 
+	/**
+	 * Current hp.
+	 */
 	hp: number;
 
 	readonly destroy?: () => void;
@@ -841,8 +871,9 @@ declare function anchor(
 	anchor:
 		| 'center'
 		| 'topleft'
-		| 'left'
+		| 'top'
 		| 'topright'
+		| 'left'
 		| 'right'
 		| 'bottomright'
 		| 'bottom'
@@ -898,7 +929,7 @@ declare function double_jump(options?: { num_jumps?: number }): DoubleJumpComp;
 
 /**
  * Fade in game object visual components such as sprites.
- * @param time In seconds
+ * @param time In seconds (default is 1)
  * @returns The fade in component
  */
 declare function fadein(time?: number): FadeInComp;
@@ -911,7 +942,7 @@ declare function fixed(): FixedComp;
 
 /**
  * Add health related logic to game object.
- * @param hp Initial health
+ * @param hp Initial health (default is 1)
  * @returns The health component
  */
 declare function health(hp?: number): HealthComp;
@@ -1090,17 +1121,27 @@ declare function on_click(
 declare function on_click(cb: BoomObjectCallback): BoomCancelEvent;
 
 /**
- * Register callback that runs when left mouse button is pressed.
+ * Register callback that runs when a mouse button is pressed.
+ * @param button Optional (`left`, `middle`, `right`, default is `left`)
  * @param cb
  * @returns Cancel callback
  */
+declare function on_mouse_press(
+	button: 'left' | 'middle' | 'right',
+	cb: () => void
+): BoomCancelEvent;
 declare function on_mouse_press(cb: () => void): BoomCancelEvent;
 
 /**
- * Register callback that runs when left mouse button is released.
+ * Register callback that runs when a mouse button is released.
+ * @param button Optional (`left`, `middle`, `right`, default is `left`)
  * @param cb
  * @returns Cancel callback
  */
+declare function on_mouse_release(
+	button: 'left' | 'middle' | 'right',
+	cb: () => void
+): BoomCancelEvent;
 declare function on_mouse_release(cb: () => void): BoomCancelEvent;
 
 /**
