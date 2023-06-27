@@ -236,10 +236,10 @@ interface BoomBlankGameObject {
 	is(tag: BoomTag): boolean;
 
 	/**
-	 * Add a component to this game object.
-	 * @param comp The component to use
+	 * Add a component to this game object, or a component-less tag.
+	 * @param comp The component or tag to use
 	 */
-	use(comp: BoomComponent): void;
+	use(comp: BoomTag | BoomComponent): void;
 
 	/**
 	 * Remove a component from this game object.
