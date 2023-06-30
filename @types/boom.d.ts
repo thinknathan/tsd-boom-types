@@ -570,19 +570,19 @@ interface HealthComp {
 	 * Register an event that runs when `heal()` is called.
 	 * @param cb Function to call
 	 */
-	on_heal(cb: () => void): void;
+	on_heal(cb: (cancel: BoomCancelEvent) => void): void;
 
 	/**
 	 * Register an event that runs when `hurt()` is called.
 	 * @param cb Function to call
 	 */
-	on_hurt(cb: () => void): void;
+	on_hurt(cb: (cancel: BoomCancelEvent) => void): void;
 
 	/**
 	 * Register an event that runs when hp is 0 or less.
 	 * @param cb Function to call
 	 */
-	on_death(cb: () => void): void;
+	on_death(cb: (cancel: BoomCancelEvent) => void): void;
 
 	/**
 	 * Increase hp. Will trigger `on_heal`.
