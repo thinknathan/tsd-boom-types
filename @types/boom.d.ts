@@ -624,8 +624,8 @@ interface MoveComp {
 	/** Pushed into the `tags` map when added to a game object. */
 	readonly tag?: 'move';
 
-	readonly direction: Vec2; // TO-DO should this be mutable?
-	readonly speed: number; // TO-DO should this be mutable?
+	direction: Vec2;
+	speed: number;
 
 	readonly init?: () => void;
 	readonly update?: (dt: number) => void;
