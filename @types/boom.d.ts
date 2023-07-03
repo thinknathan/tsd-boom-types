@@ -1187,10 +1187,10 @@ declare type BoomTiles =
 declare function add_level(
 	map: string[] | LuaSet<string>,
 	options: {
-		tile_width?: number;
-		tile_height?: number;
+		tile_width: number;
+		tile_height: number;
 		pos?: Vec2;
-		tiles?: BoomTiles;
+		tiles: BoomTiles;
 	}
 ): BoomGameObject;
 
