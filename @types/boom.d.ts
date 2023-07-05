@@ -3,7 +3,9 @@
 /// <reference types="@ts-defold/types" />
 
 /** Callback that receives a game object as its argument. */
-declare type BoomObjectCallback = (target: BoomGameObject) => void;
+declare type BoomObjectCallback = (
+	target: BoomBlankGameObject & Partial<BoomComponent>
+) => void;
 
 /** Callback that receives a function that cancels an event listener as its argument. */
 declare type BoomEventCallback = (cancel: BoomCancelEvent) => void;
@@ -208,7 +210,33 @@ declare module 'boom.boom' {
 //
 
 /** A game object that may be composed of components. */
-declare type BoomGameObject = BoomBlankGameObject & Partial<BoomComponent>;
+declare type BoomGameObject<T extends Array<BoomComponent | BoomTag>> =
+	UnionToIntersection<
+		BoomBlankGameObject & T extends Array<infer U>
+			? U extends BoomComponent
+				? BoomBlankGameObject &
+						ObjectIntersection<T> & { tags: LuaMap<string, true> }
+				: BoomBlankGameObject & { readonly tags: LuaMap<string, true> }
+			: never
+	>;
+
+// Extract the properties of an object type
+type ObjectProperties<T> = T extends BoomComponent ? Omit<T, 'tag'> : never;
+
+// Extract the union of object types from the input array
+type ObjectUnion<T extends Array<BoomComponent | BoomTag>> = Extract<
+	T[number],
+	BoomComponent
+>;
+
+// Create an intersection type from the union of object types
+type ObjectIntersection<T extends Array<BoomComponent | BoomTag>> =
+	ObjectProperties<ObjectUnion<T>>;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+	k: infer I
+) => void
+	? I
+	: never;
 
 /**
  * A game object.
@@ -221,7 +249,7 @@ interface BoomBlankGameObject {
 	 * @param comps The game object components
 	 * @returns The game object
 	 */
-	add(comps: BoomComponentOrTagSet): BoomGameObject;
+	add<T extends BoomComponent | BoomTag>(comps: T): BoomGameObject<T[]>;
 
 	/**
 	 * Destroy this game object.
@@ -252,10 +280,11 @@ interface BoomBlankGameObject {
 	 * @param tag The component to get state for
 	 * @returns The component state
 	 */
-	c(tag: BoomTag): BoomGameObject & {
-		readonly tag: BoomTag;
-		readonly __url?: url;
-	};
+	c(tag: BoomTag): BoomBlankGameObject &
+		Partial<BoomComponent> & {
+			readonly tag: BoomTag;
+			readonly __url?: url;
+		};
 
 	readonly dirty: boolean;
 	readonly children: LuaMap;
@@ -274,13 +303,17 @@ interface BoomBlankGameObject {
  * @param comps The components for the game object
  * @returns The created game object
  */
-declare function add(comps: BoomComponentOrTagSet): BoomGameObject;
+declare function add<T extends (BoomComponent | BoomTag)[]>(
+	comps: T
+): BoomGameObject<T>;
 
 /**
  * Destroy a game object and all of its components.
  * @param object The object to destroy
  */
-declare function destroy(object: BoomGameObject): void;
+declare function destroy(
+	object: BoomBlankGameObject & Partial<BoomComponent>
+): void;
 
 /**
  * Destroy all game objects with a certain tag.
@@ -293,20 +326,26 @@ declare function destroy_all(tag?: BoomTag): void;
  * @param id
  * @returns The object or undefined if it doesn't exist
  */
-declare function object(id: string): BoomGameObject | undefined;
+declare function object(
+	id: string
+): (BoomBlankGameObject & Partial<BoomComponent>) | undefined;
 
 /**
  * Get all game objects.
  * @returns All game objects
  */
-declare function objects(): LuaSet<BoomGameObject>;
+declare function objects(): LuaSet<
+	BoomBlankGameObject & Partial<BoomComponent>
+>;
 
 /**
  * Get all game objects with the specified tag.
  * @param tag The tag to get objects for, undefined to get all objects
  * @returns List of objects
  */
-declare function get(tag?: BoomTag): LuaSet<BoomGameObject>;
+declare function get(
+	tag?: BoomTag
+): LuaSet<BoomBlankGameObject & Partial<BoomComponent>>;
 
 /**
  * Run callback on every game object with a certain tag.
@@ -354,7 +393,7 @@ declare type BoomComponent =
  */
 interface AnchorComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'anchor';
+	readonly tag: 'anchor';
 
 	/**
 	 * Anchor point.
@@ -370,7 +409,7 @@ interface AnchorComp {
  */
 interface AreaComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'area';
+	readonly tag: 'area';
 
 	/**
 	 * Get all collisions currently happening for this component.
@@ -384,7 +423,7 @@ interface AreaComp {
 	 * @returns boolean (`true` if colliding with the other object), Collision data
 	 */
 	check_collision(
-		other_object: BoomGameObject
+		other_object: BoomBlankGameObject & Partial<BoomComponent>
 	): LuaMultiReturn<[boolean, BoomCollision]>;
 
 	/**
@@ -421,7 +460,7 @@ interface AreaComp {
  */
 interface BodyComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'body';
+	readonly tag: 'body';
 
 	/**
 	 * Add upward force.
@@ -466,7 +505,7 @@ interface BodyComp {
  */
 interface ColorComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'color';
+	readonly tag: 'color';
 
 	/**
 	 * Current color.
@@ -522,7 +561,7 @@ interface ColorComp {
  */
 interface DoubleJumpComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'double_jump';
+	readonly tag: 'double_jump';
 
 	/**
 	 * Performs double jump (the initial jump only happens if player is grounded).
@@ -544,7 +583,7 @@ interface DoubleJumpComp {
  */
 interface FadeInComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'fadein';
+	readonly tag: 'fadein';
 
 	readonly init?: () => void;
 }
@@ -555,7 +594,7 @@ interface FadeInComp {
  */
 interface FixedComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'fixed';
+	readonly tag: 'fixed';
 }
 
 /**
@@ -564,7 +603,7 @@ interface FixedComp {
  */
 interface HealthComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'health';
+	readonly tag: 'health';
 
 	/**
 	 * Register an event that runs when `heal()` is called.
@@ -611,7 +650,7 @@ interface HealthComp {
  */
 interface LifespanComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'lifespan';
+	readonly tag: 'lifespan';
 
 	readonly init?: () => void;
 }
@@ -622,7 +661,7 @@ interface LifespanComp {
  */
 interface MoveComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'move';
+	readonly tag: 'move';
 
 	direction: Vec2;
 	speed: number;
@@ -637,7 +676,7 @@ interface MoveComp {
  */
 interface OffscreenComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'offscreen';
+	readonly tag: 'offscreen';
 
 	/**
 	 * Register a callback that runs when the object goes out of view.
@@ -663,7 +702,7 @@ interface OffscreenComp {
  */
 interface OpacityComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'opacity';
+	readonly tag: 'opacity';
 
 	/**
 	 * The opacity of the component instance. (0.0 to 1.0).
@@ -677,7 +716,7 @@ interface OpacityComp {
  */
 interface PosComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'pos';
+	readonly tag: 'pos';
 
 	/**
 	 * Move a number of pixels per second.
@@ -702,7 +741,7 @@ interface PosComp {
  */
 interface RotateComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'rotate';
+	readonly tag: 'rotate';
 
 	/**
 	 * Updates rotation.
@@ -720,7 +759,7 @@ interface RotateComp {
  */
 interface ScaleComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'scale';
+	readonly tag: 'scale';
 
 	/**
 	 * Set new scale.
@@ -745,7 +784,7 @@ interface ScaleComp {
  */
 interface SpriteComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'sprite';
+	readonly tag: 'sprite';
 
 	/**
 	 * Play an animation.
@@ -795,7 +834,7 @@ interface SpriteComp {
  */
 interface StayComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'stay';
+	readonly tag: 'stay';
 }
 
 /**
@@ -804,7 +843,7 @@ interface StayComp {
  */
 interface TextComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'text';
+	readonly tag: 'text';
 
 	/**
 	 * The text to render.
@@ -822,7 +861,7 @@ interface TextComp {
  */
 interface TimerComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'timer';
+	readonly tag: 'timer';
 
 	/**
 	 * Run a callback function after n seconds.
@@ -854,7 +893,7 @@ interface TimerComp {
  */
 interface ZComp {
 	/** Pushed into the `tags` map when added to a game object. */
-	readonly tag?: 'z';
+	readonly tag: 'z';
 
 	/**
 	 * The z value.
@@ -1069,8 +1108,8 @@ declare function z(index: number): ZComp;
 interface BoomCollision {
 	normal: vmath.vector3;
 	distance: number;
-	source: BoomGameObject;
-	target: BoomGameObject;
+	source: BoomBlankGameObject & Partial<BoomComponent>;
+	target: BoomBlankGameObject & Partial<BoomComponent>;
 }
 
 /**
@@ -1159,7 +1198,10 @@ declare function on_mouse_move(cb: () => void): BoomCancelEvent;
  */
 declare function on_update(
 	tag: BoomTag,
-	fn: (object: BoomGameObject, cancel: BoomCancelEvent) => void
+	fn: (
+		object: BoomBlankGameObject & Partial<BoomComponent>,
+		cancel: BoomCancelEvent
+	) => void
 ): void;
 declare function on_update(fn: (cancel: BoomCancelEvent) => void): void;
 
@@ -1192,7 +1234,7 @@ declare function add_level(
 		pos?: Vec2;
 		tiles: BoomTiles;
 	}
-): BoomGameObject;
+): BoomBlankGameObject & Partial<BoomComponent>;
 
 //
 // Math
