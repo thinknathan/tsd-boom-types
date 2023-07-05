@@ -249,7 +249,7 @@ interface BoomBlankGameObject {
 	 * @param comps The game object components
 	 * @returns The game object
 	 */
-	add<T extends BoomComponent | BoomTag>(comps: T): BoomGameObject<T[]>;
+	add<T extends (BoomComponent | BoomTag)[]>(comps: T): BoomGameObject<T>;
 
 	/**
 	 * Destroy this game object.
