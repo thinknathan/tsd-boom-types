@@ -4,11 +4,6 @@ TypeScript types for britzl's [boom](https://github.com/britzl/boom/), a game fr
 
 For use with [TS-Defold](https://github.com/ts-defold) and [TypeScriptToLua](https://github.com/TypeScriptToLua).
 
-## Style
-
-- `unknown` is preferred and `any` is not used.
-- Lua `nil` is described as `undefined` and `null` is not used.
-
 ## Installation
 
 1. Create a [TS-Defold](https://github.com/ts-defold) project
