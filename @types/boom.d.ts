@@ -415,7 +415,7 @@ interface AreaComp {
 	 * Get all collisions currently happening for this component.
 	 * @returns Set of collisions
 	 */
-	get_collisions(): BoomCollision[] | LuaSet<BoomCollision>;
+	get_collisions(): LuaSet<BoomCollision>;
 
 	/**
 	 * Check collision between this component and another object.
