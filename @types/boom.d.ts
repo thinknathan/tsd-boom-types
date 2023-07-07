@@ -1108,8 +1108,8 @@ declare function z(index: number): ZComp;
 interface BoomCollision {
 	normal: vmath.vector3;
 	distance: number;
-	source: BoomBlankGameObject & Partial<BoomComponent>;
-	target: BoomBlankGameObject & Partial<BoomComponent>;
+	source: BoomBlankGameObject & Omit<AreaComp, 'tag'> & Partial<BoomComponent>;
+	target: BoomBlankGameObject & Omit<AreaComp, 'tag'> & Partial<BoomComponent>;
 }
 
 /**
