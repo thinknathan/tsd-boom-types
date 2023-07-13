@@ -4,7 +4,7 @@
 
 /** Callback that receives a game object as its argument. */
 declare type BoomObjectCallback = (
-	target: BoomBlankGameObject & Partial<BoomComponent>
+	target: BoomBlankGameObject & Partial<BoomComponent>,
 ) => void;
 
 /** Callback that receives a function that cancels an event listener as its argument. */
@@ -233,7 +233,7 @@ type ObjectUnion<T extends Array<BoomComponent | BoomTag>> = Extract<
 type ObjectIntersection<T extends Array<BoomComponent | BoomTag>> =
 	ObjectProperties<ObjectUnion<T>>;
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I
+	k: infer I,
 ) => void
 	? I
 	: never;
@@ -304,7 +304,7 @@ interface BoomBlankGameObject {
  * @returns The created game object
  */
 declare function add<T extends (BoomComponent | BoomTag)[]>(
-	comps: T
+	comps: T,
 ): BoomGameObject<T>;
 
 /**
@@ -312,7 +312,7 @@ declare function add<T extends (BoomComponent | BoomTag)[]>(
  * @param object The object to destroy
  */
 declare function destroy(
-	object: BoomBlankGameObject & Partial<BoomComponent>
+	object: BoomBlankGameObject & Partial<BoomComponent>,
 ): void;
 
 /**
@@ -327,7 +327,7 @@ declare function destroy_all(tag?: BoomTag): void;
  * @returns The object or undefined if it doesn't exist
  */
 declare function object(
-	id: string
+	id: string,
 ): (BoomBlankGameObject & Partial<BoomComponent>) | undefined;
 
 /**
@@ -344,7 +344,7 @@ declare function objects(): LuaSet<
  * @returns List of objects
  */
 declare function get(
-	tag?: BoomTag
+	tag?: BoomTag,
 ): LuaSet<BoomBlankGameObject & Partial<BoomComponent>>;
 
 /**
@@ -423,7 +423,7 @@ interface AreaComp {
 	 * @returns boolean (`true` if colliding with the other object), Collision data
 	 */
 	check_collision(
-		other_object: BoomBlankGameObject & Partial<BoomComponent>
+		other_object: BoomBlankGameObject & Partial<BoomComponent>,
 	): LuaMultiReturn<[boolean, BoomCollision]>;
 
 	/**
@@ -916,7 +916,7 @@ declare function anchor(
 		| 'right'
 		| 'bottomright'
 		| 'bottom'
-		| 'bottomleft'
+		| 'bottomleft',
 ): AnchorComp;
 
 /**
@@ -956,7 +956,7 @@ declare function color(
 	r?: number,
 	g?: number,
 	b?: number,
-	a?: number
+	a?: number,
 ): ColorComp;
 
 /**
@@ -993,7 +993,7 @@ declare function health(hp?: number): HealthComp;
  */
 declare function lifespan(
 	time: number,
-	options?: { fade?: number }
+	options?: { fade?: number },
 ): LifespanComp;
 
 /**
@@ -1057,7 +1057,7 @@ declare function sprite(
 		flip_y?: boolean;
 		width?: number;
 		height?: number;
-	}
+	},
 ): SpriteComp;
 
 /**
@@ -1078,7 +1078,7 @@ declare function text(
 		font?: string;
 		align?: 'left' | 'right' | 'center';
 		width?: number;
-	}
+	},
 ): TextComp;
 
 /**
@@ -1122,7 +1122,7 @@ interface BoomCollision {
 declare function on_collide(
 	tag1: BoomTag,
 	tag2: BoomTag | undefined,
-	fn: (collision: BoomCollision, cancel: BoomCancelEvent) => void
+	fn: (collision: BoomCollision, cancel: BoomCancelEvent) => void,
 ): BoomCancelEvent;
 
 /**
@@ -1133,7 +1133,7 @@ declare function on_collide(
  */
 declare function on_key_press(
 	key_id: BoomKeyboardKey,
-	cb: BoomEventCallback
+	cb: BoomEventCallback,
 ): BoomCancelEvent;
 
 /**
@@ -1144,7 +1144,7 @@ declare function on_key_press(
  */
 declare function on_key_release(
 	key_id: BoomKeyboardKey,
-	cb: BoomEventCallback
+	cb: BoomEventCallback,
 ): BoomCancelEvent;
 
 /**
@@ -1155,7 +1155,7 @@ declare function on_key_release(
  */
 declare function on_click(
 	tag: BoomTag,
-	cb: BoomObjectCallback
+	cb: BoomObjectCallback,
 ): BoomCancelEvent;
 declare function on_click(cb: BoomObjectCallback): BoomCancelEvent;
 
@@ -1167,7 +1167,7 @@ declare function on_click(cb: BoomObjectCallback): BoomCancelEvent;
  */
 declare function on_mouse_press(
 	button: 'left' | 'middle' | 'right',
-	cb: () => void
+	cb: () => void,
 ): BoomCancelEvent;
 declare function on_mouse_press(cb: () => void): BoomCancelEvent;
 
@@ -1179,7 +1179,7 @@ declare function on_mouse_press(cb: () => void): BoomCancelEvent;
  */
 declare function on_mouse_release(
 	button: 'left' | 'middle' | 'right',
-	cb: () => void
+	cb: () => void,
 ): BoomCancelEvent;
 declare function on_mouse_release(cb: () => void): BoomCancelEvent;
 
@@ -1200,8 +1200,8 @@ declare function on_update(
 	tag: BoomTag,
 	fn: (
 		object: BoomBlankGameObject & Partial<BoomComponent>,
-		cancel: BoomCancelEvent
-	) => void
+		cancel: BoomCancelEvent,
+	) => void,
 ): void;
 declare function on_update(fn: (cancel: BoomCancelEvent) => void): void;
 
@@ -1233,7 +1233,7 @@ declare function add_level(
 		tile_height: number;
 		pos?: Vec2;
 		tiles: BoomTiles;
-	}
+	},
 ): BoomBlankGameObject & Partial<BoomComponent>;
 
 //
@@ -1365,14 +1365,14 @@ declare function tween(
 	to: number,
 	duration: number,
 	easing: BoomEasing | undefined,
-	set_value: (endValue: number) => void
+	set_value: (endValue: number) => void,
 ): Tween;
 declare function tween(
 	from: Vec2,
 	to: Vec2,
 	duration: number,
 	easing: BoomEasing | undefined,
-	set_value: (endValue: Vec2) => void
+	set_value: (endValue: Vec2) => void,
 ): Tween;
 
 /**
