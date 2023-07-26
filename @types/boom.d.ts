@@ -446,6 +446,12 @@ interface AreaComp {
 	 */
 	has_point(point: undefined): boolean;
 
+	/**
+	 * Url of the collision object used by the area.
+	 * Undefined on the first frame that the object is created.
+	 */
+	readonly area_url: url | undefined;
+
 	readonly init?: () => void;
 	readonly pre_update?: () => void;
 	readonly update?: (dt: number) => void;
