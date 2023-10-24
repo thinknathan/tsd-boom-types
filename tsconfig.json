@@ -1,19 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "es2019",
-		"lib": ["es2019"],
-		"module": "commonjs",
-		"esModuleInterop": true,
-		"moduleResolution": "node",
 		"declaration": true,
-		"sourceMap": true,
-		"newLine": "LF",
-		"stripInternal": true,
+		"esModuleInterop": true,
+		"lib": ["ESNext"],
+		"moduleResolution": "node",
+		"rootDir": ".",
 		"strict": true,
-		"experimentalDecorators": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"rootDir": "./@types",
+		"target": "ESNext",
 		"typeRoots": []
 	},
 	"exclude": ["./node_modules/*"]
