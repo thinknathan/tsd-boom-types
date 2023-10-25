@@ -15,7 +15,7 @@
 		"typescript": "~5.1.0"
 	},
 	"peerDependencies": {
-		"@ts-defold/types": "^1.0.0",
-		"typescript-to-lua": "^1.10.0"
+		"@ts-defold/types": ">=1.0.0",
+		"typescript-to-lua": ">=1.10.0"
 	}
 }

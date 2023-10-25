@@ -4,7 +4,7 @@
 		"esModuleInterop": true,
 		"lib": ["ESNext"],
 		"moduleResolution": "node",
-		"rootDir": ".",
+		"rootDir": "./@types",
 		"strict": true,
 		"target": "ESNext",
 		"typeRoots": []
