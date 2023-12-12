@@ -230,6 +230,8 @@ type ObjectUnion<T extends Array<BoomComponent | BoomTag>> = Extract<
 >;
 
 // Create an intersection type from the union of object types
+// This type is copied from kaboom
+// @link https://github.com/replit/kaboom
 type ObjectIntersection<T extends Array<BoomComponent | BoomTag>> =
 	ObjectProperties<ObjectUnion<T>>;
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
