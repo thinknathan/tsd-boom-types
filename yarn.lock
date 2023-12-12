@@ -3,16 +3,16 @@
 
 
 "@ts-defold/types@^1.2.21":
-  version "1.2.22"
-  resolved "https://registry.yarnpkg.com/@ts-defold/types/-/types-1.2.22.tgz#88c5db61c9f8a3f8abc49d9aa77719bc42ee7469"
-  integrity sha512-BCc0/omYGWy7k07iYWd5CBvhGpjEPl4NQs3A84z/SxG9S6KHGQH+i6d6VoYeWJJi0V8H2UtQzcQV17cgt/fhTQ==
+  version "1.2.32"
+  resolved "https://registry.yarnpkg.com/@ts-defold/types/-/types-1.2.32.tgz#40376a45593c845cd6374d7f8641f509be7a835e"
+  integrity sha512-MJwA2l0TM9cqVDRE89jBb+z5Hu/eEDE95pLhOWkviIEvzUP50GuNtI8wAxGZStd6mdY+WaKNDiM6Q/XEob2Gbg==
   dependencies:
     lua-types "^2.10.1"
 
 "@typescript-to-lua/language-extensions@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@typescript-to-lua/language-extensions/-/language-extensions-1.0.0.tgz#fad73b01c21ace67abbd1477cd2b1f8b3ce7287b"
-  integrity sha512-GtmhFqyg+txpGgGLM3mlS3R6AEG9MQhKALxxcbr6SBzg9u7YAXcPKqUBaBYd6nH+Pi/eQLcWz4BNOLhz8v4TjQ==
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@typescript-to-lua/language-extensions/-/language-extensions-1.19.0.tgz#e7535ed343bed68580dd96e1a8101a1dbb2dc771"
+  integrity sha512-Os5wOKwviTD4LeqI29N0btYOjokSJ97iCf45EOjIABlb5IwNQy7AE/AqZJobRw3ywHH8+KzJUMkEirWPzh2tUA==
 
 lua-types@^2.10.1:
   version "2.13.1"
@@ -20,11 +20,11 @@ lua-types@^2.10.1:
   integrity sha512-rRwtvX6kS+5MpuO3xpvKsnYjdSDDI064Qq1OqX8gY+r+0l7m3dFLiZPDFoHqH22jaBpEvcHcPs6+WD7qkdmFsA==
 
 prettier@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.0.tgz#e7b19f691245a21d618c68bc54dc06122f6105ae"
-  integrity sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.1.1.tgz#6ba9f23165d690b6cbdaa88cb0807278f7019848"
+  integrity sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==
 
-typescript@~5.1.0:
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.1.6.tgz#02f8ac202b6dad2c0dd5e0913745b47a37998274"
-  integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
+typescript@~5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
+  integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
